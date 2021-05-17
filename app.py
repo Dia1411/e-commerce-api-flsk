@@ -1,10 +1,7 @@
 from flask import Flask, session, render_template, request ,redirect , url_for, jsonify
-from flask_cors import CORS
 import psycopg2
 
 app = Flask(__name__)
-cors = CORS(app)
-
 
 @app.route("/")                   
 def hello():      
@@ -40,8 +37,9 @@ def categories():
 
         cursor.execute(command)
 
-        category_id = cursor.fetchall()[0][0]	
-	print(f"Category ID is : {category_id}")
+        category_id = cursor.fetchall()[0][0]
+
+        print(f"Category id is : {category_id}")
 
         response = {"kategoria" : category, "filtrat" : []}
 
@@ -72,7 +70,8 @@ def categories():
             fetched_filters_index += 1
 
         conn.commit()
-	print(f"Response is : {response}")
+
+        print(f"Response is : {response}")
 
         return jsonify(response)
     else:
