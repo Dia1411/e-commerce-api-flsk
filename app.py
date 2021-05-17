@@ -27,9 +27,49 @@ def hello():
 def categories(): 
 
     if request.method == "POST":
+
+        conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
+        cursor = conn.cursor()  
+
         category = request.form.get('category')
-        print(category)
-        return jsonify(category)
+
+        command = f"SELECT id from categories WHERE category = '{category}'"
+
+        cursor.execute(command)
+
+        category_id = cursor.fetchall()[0][0]
+
+        response = {"kategoria" : category, "filtrat" : []}
+
+        filters = []
+
+        cursor.execute(f"SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'filter{category_id}';")
+
+        fetched_filters = cursor.fetchall()
+
+        fetched_filters_index = 0
+
+        while fetched_filters_index < len(fetched_filters):
+
+            current_working_filter = fetched_filters[fetched_filters_index][0]
+
+            response.get("filtrat").append({"emri" : current_working_filter, "values" : [], "value" : None})
+
+            cursor.execute(f"SELECT {current_working_filter} FROM filter{category_id} WHERE {current_working_filter} != 'NULL';")
+
+            filter_options = cursor.fetchall()
+
+            current_filters_working_list = response.get("filtrat")[fetched_filters_index]
+
+            for filter_option in filter_options:
+                
+                current_filters_working_list.get('values').append(filter_option[0])
+
+            fetched_filters_index += 1
+
+        conn.commit()
+
+        return jsonify(response)
     else:
         return jsonify("Karin")
 
