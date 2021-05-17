@@ -68,13 +68,33 @@ def create_products():
 
     product_data = json.loads(request.form.get('product_data'))
 
+    category_name = product_data['details']['kategoria']
+
+    command = f"SELECT id from categories WHERE category = '{category_name}'"
+
+    cursor.execute(command)
+
+    category_id = cursor.fetchall()[0][0]
+
     print(product_data['owner'], product_data['responseData'], product_data['details'])
+
+    to_insert_json = product_data['details']
+
+    for data in product_data['responseData']
+
+        to_insert_json.update({data['emri'] : data['value'] })
+
+    commands =  "INSERT INTO products (creation_time, details, owner, spot, category_id) VALUES (%s, %s, %s, %s, %s)"
+
+    data = (product_data['creationTime'], to_insert_json, product_data['owner'], product_data['spot'], category_id)
+
+    cursor.execute(commands, data)
 
     conn.commit()
 
     conn.close()
 
-    return product_data
+    return "1"
 
 
 if __name__ == "__main__": 
