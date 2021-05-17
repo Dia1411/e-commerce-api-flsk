@@ -59,7 +59,6 @@ def categories():
     return jsonify(response)
 
 
-
 @app.route("/create_products" , methods=["POST"])
 def create_products(): 
 
@@ -95,6 +94,39 @@ def create_products():
     conn.close()
 
     return "1"
+
+
+@app.route("/menu" , methods=["POST"])
+def grab_menu():
+
+    conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT departament_type FROM departaments")
+
+    menu_data = cursor.fetchall()
+
+    response_menu = []
+
+    menu_data_index = 0
+
+    while menu_data_index < len(menu_data):
+
+        response_menu.append({"kategoria" : menu_data[menu_data_index][0] , "nenkategorite" : []})
+        
+        cursor.execute(f"SELECT category FROM categories WHERE departament = '{menu_data[menu_data_index][0]}'")
+
+        category_datas = cursor.fetchall()
+
+        for category_data in category_datas:
+            
+            link = f"{menu_data[menu_data_index][0]}-{category_data[0]}".lower().replace(" ","-")
+
+            response_menu[menu_data_index].get("nenkategorite").append({"emri" : category_data[0], "link" : link})
+
+        menu_data_index += 1
+
+    return jsonify(response_menu)
 
 
 if __name__ == "__main__": 
