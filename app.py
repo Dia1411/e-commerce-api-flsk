@@ -34,7 +34,7 @@ def categories():
 
     while fetched_filters_index < len(fetched_filters):
 
-        current_working_filter = fetched_filters[fetched_filters_index][0]
+        current_working_filter = fetched_filters[fetched_filters_index][0].replace("_hyphen_", "-").replace("_asgn_", "&").replace("_", " ").upper()
 
         response.get("filtrat").append({"emri" : current_working_filter, "values" : [], "value" : None})
 
@@ -95,7 +95,7 @@ def create_products():
 
     return "1"
 
-
+"""
 @app.route("/menu" , methods=["POST"])
 def grab_menu():
 
@@ -127,6 +127,8 @@ def grab_menu():
         menu_data_index += 1
 
     return jsonify(response_menu)
+"""
+
 
 
 if __name__ == "__main__": 
