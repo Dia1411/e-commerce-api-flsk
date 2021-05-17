@@ -40,7 +40,8 @@ def categories():
 
         cursor.execute(command)
 
-        category_id = cursor.fetchall()[0][0]
+        category_id = cursor.fetchall()[0][0]	
+	print(f"Category ID is : {category_id}")
 
         response = {"kategoria" : category, "filtrat" : []}
 
@@ -71,6 +72,7 @@ def categories():
             fetched_filters_index += 1
 
         conn.commit()
+	print(f"Response is : {response}")
 
         return jsonify(response)
     else:
