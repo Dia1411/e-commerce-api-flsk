@@ -68,7 +68,9 @@ def create_products():
 
     product_data = request.form.get('product_data')
 
-    print(product_data['owner'], product_data['responseData'], product_data['details'])
+    #print(product_data['owner'], product_data['responseData'], product_data['details'])
+
+    print(type(product_data))
 
     conn.commit()
 
