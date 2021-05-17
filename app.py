@@ -1,6 +1,6 @@
 from flask import Flask, session, render_template, request ,redirect , url_for, jsonify
 from flask_cors import CORS
-import psycopg2
+import psycopg2, json
 
 app = Flask(__name__)
 CORS(app)
@@ -70,7 +70,7 @@ def create_products():
 
     #print(product_data['owner'], product_data['responseData'], product_data['details'])
 
-    print(type(product_data))
+    print(type(json.loads(product_data)))
 
     conn.commit()
 
