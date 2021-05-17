@@ -66,11 +66,9 @@ def create_products():
     conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
     cursor = conn.cursor()  
 
-    product_data = request.form.get('product_data')
+    product_data = json.loads(request.form.get('product_data'))
 
-    #print(product_data['owner'], product_data['responseData'], product_data['details'])
-
-    print(type(json.loads(product_data)))
+    print(product_data['owner'], product_data['responseData'], product_data['details'])
 
     conn.commit()
 
