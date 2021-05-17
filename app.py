@@ -80,15 +80,15 @@ def create_products():
 
     to_insert_json = product_data['details']
 
-    for data in product_data['responseData']
+    for data in product_data['responseData']:
 
         to_insert_json.update({data['emri'] : data['value'] })
 
     commands =  "INSERT INTO products (creation_time, details, owner, spot, category_id) VALUES (%s, %s, %s, %s, %s)"
 
-    data = (product_data['creationTime'], to_insert_json, product_data['owner'], product_data['spot'], category_id)
+    insert_data = (product_data['creationTime'], to_insert_json, product_data['owner'], product_data['spot'], category_id)
 
-    cursor.execute(commands, data)
+    cursor.execute(commands, insert_data)
 
     conn.commit()
 
