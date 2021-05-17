@@ -80,5 +80,14 @@ def categories():
         return jsonify("Karin")
 
 
+@app.route("/create_products" , methods=["POST"])
+def create_products(): 
+
+    product_data = request.form.get('product_data')
+
+    print(product_data)
+
+    return True
+
 if __name__ == "__main__": 
     app.run()              
