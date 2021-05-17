@@ -87,7 +87,7 @@ def create_products():
 
     print(product_data)
 
-    return True
+    return product_data
 
 if __name__ == "__main__": 
     app.run()              
