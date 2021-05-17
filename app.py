@@ -86,7 +86,7 @@ def create_products():
 
     commands =  "INSERT INTO products (creation_time, details, owner, spot, category_id) VALUES (%s, %s, %s, %s, %s)"
 
-    insert_data = (product_data['creationTime'], to_insert_json, product_data['owner'], product_data['spot'], category_id)
+    insert_data = (product_data['creationTime'], json.dumps(to_insert_json), product_data['owner'], product_data['spot'], category_id)
 
     cursor.execute(commands, insert_data)
 
