@@ -23,5 +23,16 @@ def hello():
     return jsonify(response)
 
 
+@app.route("/categories" , methods=["POST"])
+def categories(): 
+
+    if request.method == "POST":
+        category = request.form.get('category')
+        print(category)
+        return jsonify(category)
+    else:
+        return jsonify("Karin")
+
+
 if __name__ == "__main__": 
     app.run()              
