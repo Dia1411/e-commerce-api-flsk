@@ -126,7 +126,7 @@ def products_and_filters():
 
         current_working_filter = fetched_filters[fetched_filters_index][0]
 
-        response.get("filtrat").append({"emri" : current_working_filter.replace("_hyphen_", "-").replace("_asgn_", "&").replace("_", " ").upper(), "values" : [], "value" : None})
+        response.get("filtrat").append({"value" : None, "checked": None,"emri" : current_working_filter.replace("_hyphen_", "-").replace("_asgn_", "&").replace("_", " ").upper(), "values" : [], "value" : None})
 
         cursor.execute(f"SELECT {current_working_filter} FROM filter{category_id} WHERE {current_working_filter} != 'NULL';")
 
@@ -193,6 +193,7 @@ def filter():
     print(filter_data)
 
     response = {"produktet" : []}
+
 
     return "1"
     
