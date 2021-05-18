@@ -103,7 +103,7 @@ def products_and_filters():
     cursor = conn.cursor()  
 
     response = {}
-    category_name = request.form.get('category')
+    category_name = json.loads(request.form.get('category'))
 
     print(category_name['kategoria'], category_name['last'])
 
