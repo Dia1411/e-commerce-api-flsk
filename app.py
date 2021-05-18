@@ -104,16 +104,15 @@ def products_and_filters():
 
     category_name = request.args.get('category')
 
-    number_of_products = request.args.get('last')
+    number_of_products = int(request.args.get('last'))
 
-    print(type(category_name), "  ", f".{category_name}.", type(number_of_products), f".{number_of_products}.")
+    #print(type(category_name), "  ", f".{category_name}.", type(number_of_products), f".{number_of_products}.")
 
-    """
-    print(category_name['kategoria'], category_name['last'])
+    print(category_name, number_of_products)
 
-    category_id = get_category_id(category_name['kategoria'], cursor)
+    category_id = get_category_id(category_name, cursor)
 
-    response = {"kategoria" : category_name['kategoria'], "filtrat" : [], "produktet" : []}
+    response = {"kategoria" : category_name, "filtrat" : [], "produktet" : []}
 
     print(f"Category ID : {category_id}")
 
@@ -143,7 +142,7 @@ def products_and_filters():
 
     columns = ('creation_time', 'details', 'owner', 'spot')
   
-    cursor.execute(f"SELECT creation_time, details, owner, spot  FROM products WHERE category_id = {category_id} LIMIT {category_name['last']};")
+    cursor.execute(f"SELECT creation_time, details, owner, spot  FROM products WHERE category_id = {category_id} LIMIT {number_of_products};")
     
     products = cursor.fetchall()
 
@@ -154,10 +153,9 @@ def products_and_filters():
 
     conn.commit()
     conn.close()
-    """
     
-    #return jsonify(response)
-    return "1"
+    return jsonify(response)
+
 
 
 """
