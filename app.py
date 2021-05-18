@@ -102,10 +102,50 @@ def products_and_filters():
     conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
     cursor = conn.cursor()  
 
-    response = {}
     category_name = json.loads(request.form.get('category'))
 
     print(category_name['kategoria'], category_name['last'])
+
+    category_id = get_category_id(category_name, cursor)
+
+    response = {"kategoria" : category, "filtrat" : [], "produktet" : []}
+
+    print(f"Category ID : {category_id}")
+
+    cursor.execute(f"SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'filter{category_id}';")
+    
+    fetched_filters = cursor.fetchall()
+
+    fetched_filters_index = 0
+
+    while fetched_filters_index < len(fetched_filters):
+
+        current_working_filter = fetched_filters[fetched_filters_index][0].replace("_hyphen_", "-").replace("_asgn_", "&").replace("_", " ").upper()
+
+        response.get("filtrat").append({"emri" : current_working_filter, "values" : [], "value" : None})
+
+        cursor.execute(f"SELECT {current_working_filter} FROM filter{category_id} WHERE {current_working_filter} != 'NULL';")
+
+        filter_options = cursor.fetchall()
+
+        current_filters_working_list = response.get("filtrat")[fetched_filters_index]
+
+        for filter_option in filter_options:
+            
+            current_filters_working_list.get('values').append(filter_option[0])
+
+        fetched_filters_index += 1
+
+    columns = ('creation_time', 'details', 'owner', 'spot')
+  
+    cursor.execute(f"SELECT creation_time, details, owner, spot  FROM products WHERE category_id = {category_id} LIMIT {category_name['last']};")
+    
+    products = cursor.fetchall()
+
+    for product in products: 
+        response.get("produktet").append(dict(zip(columns, product)))
+
+    print(response)
 
     conn.commit()
     conn.close()
