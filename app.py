@@ -108,7 +108,7 @@ def products_and_filters():
 
     category_id = get_category_id(category_name['kategoria'], cursor)
 
-    response = {"kategoria" : category, "filtrat" : [], "produktet" : []}
+    response = {"kategoria" : category_name['kategoria'], "filtrat" : [], "produktet" : []}
 
     print(f"Category ID : {category_id}")
 
