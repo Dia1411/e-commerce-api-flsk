@@ -104,7 +104,7 @@ def products_and_filters():
 
     category_name = request.data.decode('UTF-8')
 
-    print(type(category_name), "  ", category_name)
+    print(type(category_name), "  ", f".{category_name}.")
 
     """
     print(category_name['kategoria'], category_name['last'])
@@ -153,7 +153,9 @@ def products_and_filters():
     conn.commit()
     conn.close()
     """
-    return jsonify(response)
+    
+    #return jsonify(response)
+    return "1"
 
 
 """
