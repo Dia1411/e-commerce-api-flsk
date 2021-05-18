@@ -120,9 +120,9 @@ def products_and_filters():
 
     while fetched_filters_index < len(fetched_filters):
 
-        current_working_filter = fetched_filters[fetched_filters_index][0].replace("_hyphen_", "-").replace("_asgn_", "&").replace("_", " ").upper()
+        current_working_filter = fetched_filters[fetched_filters_index][0]
 
-        response.get("filtrat").append({"emri" : current_working_filter, "values" : [], "value" : None})
+        response.get("filtrat").append({"emri" : current_working_filter.replace("_hyphen_", "-").replace("_asgn_", "&").replace("_", " ").upper(), "values" : [], "value" : None})
 
         cursor.execute(f"SELECT {current_working_filter} FROM filter{category_id} WHERE {current_working_filter} != 'NULL';")
 
