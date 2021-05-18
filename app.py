@@ -102,7 +102,7 @@ def products_and_filters():
     conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
     cursor = conn.cursor()  
 
-    category_name = json.loads(request.form.get('category'))
+    category_name = json.loads(request.data)
 
     print(category_name['kategoria'], category_name['last'])
 
