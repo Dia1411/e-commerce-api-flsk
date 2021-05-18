@@ -96,15 +96,15 @@ def create_products():
     return "1"
 
 
-@app.route("/products_and_filters/<category>/<last>" , methods=["POST"])
+@app.route("/products_and_filters" , methods=["POST"])
 def products_and_filters(category, last): 
 
     conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
     cursor = conn.cursor()  
 
-    category_name = category
+    category_name = request.args.get('category')
 
-    number_of_products = last
+    number_of_products = request.args.get('last')
 
     print(type(category_name), "  ", f".{category_name}.", type(number_of_products), f".{number_of_products}.")
 
