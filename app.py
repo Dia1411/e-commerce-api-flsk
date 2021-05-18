@@ -106,7 +106,7 @@ def products_and_filters():
 
     print(category_name['kategoria'], category_name['last'])
 
-    category_id = get_category_id(category_name, cursor)
+    category_id = get_category_id(category_name['kategoria'], cursor)
 
     response = {"kategoria" : category, "filtrat" : [], "produktet" : []}
 
