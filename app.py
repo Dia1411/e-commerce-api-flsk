@@ -181,6 +181,21 @@ def products():
     return jsonify(response)
 
 
+@app.route("/filter", methods=["POST"])
+def filter():
+
+    conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
+
+    cursor = conn.cursor()  
+
+    filter_data = json.loads(request.form.get('product_data'))
+
+    print(filter_data)
+
+    response = {"produktet" : []}
+
+    return "1"
+    
 """
 @app.route("/menu" , methods=["POST"])
 def grab_menu():
