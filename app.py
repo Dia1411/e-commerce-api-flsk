@@ -112,7 +112,7 @@ def products_and_filters():
     #katRequest {
     #    "kategoria" : ""
     #}
-
+    
     conn.commit()
     conn.close()
 
