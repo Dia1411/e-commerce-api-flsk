@@ -105,14 +105,8 @@ def products_and_filters():
     response = {}
     category_name = request.form.get('category')
 
-    print(category_name)
+    print(category_name['kategoria'], category_name['last'])
 
-    #category_id = get_category_id(category, cursor)
-
-    #katRequest {
-    #    "kategoria" : ""
-    #}
-    
     conn.commit()
     conn.close()
 
