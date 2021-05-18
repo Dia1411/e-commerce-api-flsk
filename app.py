@@ -105,7 +105,7 @@ def products_and_filters():
     response = {}
     category_name = request.form.get('category')
 
-    print(json.loads(category_name))
+    print(category_name)
 
     #category_id = get_category_id(category, cursor)
 
