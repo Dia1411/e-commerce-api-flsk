@@ -97,7 +97,7 @@ def create_products():
 
 
 @app.route("/products_and_filters" , methods=["POST"])
-def products_and_filters(category, last): 
+def products_and_filters(): 
 
     conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
     cursor = conn.cursor()  
