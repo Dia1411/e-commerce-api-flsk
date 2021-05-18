@@ -38,9 +38,9 @@ def categories():
 
     while fetched_filters_index < len(fetched_filters):
 
-        current_working_filter = fetched_filters[fetched_filters_index][0].replace("_hyphen_", "-").replace("_asgn_", "&").replace("_", " ").upper()
+        current_working_filter = fetched_filters[fetched_filters_index][0]
 
-        response.get("filtrat").append({"emri" : current_working_filter, "values" : [], "value" : None})
+        response.get("filtrat").append({"emri" : current_working_filter.replace("_hyphen_", "-").replace("_asgn_", "&").replace("_", " ").upper(), "values" : [], "value" : None})
 
         cursor.execute(f"SELECT {current_working_filter} FROM filter{category_id} WHERE {current_working_filter} != 'NULL';")
 
@@ -156,6 +156,29 @@ def products_and_filters():
     
     return jsonify(response)
 
+
+@app.route("/products" , methods=["POST"])
+def products(): 
+
+    conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
+    cursor = conn.cursor()  
+
+    product_name = request.args.get('product_name')
+
+    columns = ('creation_time', 'details', 'owner', 'spot')
+  
+    cursor.execute(f"SELECT creation_time, details, owner, spot  FROM products WHERE spot = {product_name};")
+    
+    products = cursor.fetchall()[0]
+
+    response = dict(zip(columns, product))
+
+    print(response)
+
+    conn.commit()
+    conn.close()
+
+    return jsonify(response)
 
 
 """
