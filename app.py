@@ -6,6 +6,15 @@ app = Flask(__name__)
 CORS(app)
 
 
+def get_category_id(category_name, cursor):
+
+    command = f"SELECT id from categories WHERE category = '{category}'"
+
+    cursor.execute(command)
+
+    return cursor.fetchall()[0][0]
+
+
 @app.route("/categories" , methods=["POST"])
 def categories(): 
 
@@ -13,12 +22,7 @@ def categories():
     cursor = conn.cursor()  
 
     category = request.form.get('category')
-
-    command = f"SELECT id from categories WHERE category = '{category}'"
-
-    cursor.execute(command)
-
-    category_id = cursor.fetchall()[0][0]
+    category_id = get_category_id(category, cursor)
 
     print(f"Category id is : {category_id}")
 
@@ -69,11 +73,7 @@ def create_products():
 
     category_name = product_data['details']['kategoria']
 
-    command = f"SELECT id from categories WHERE category = '{category_name}'"
-
-    cursor.execute(command)
-
-    category_id = cursor.fetchall()[0][0]
+    category_id = get_category_id(category_name, cursor)
 
     print(product_data['owner'], product_data['responseData'], product_data['details'])
 
@@ -94,6 +94,30 @@ def create_products():
     conn.close()
 
     return "1"
+
+
+@app.route("/products_and_filters" , methods=["POST"])
+def products_and_filters(): 
+
+    conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
+    cursor = conn.cursor()  
+
+    response = {}
+    category_name = request.form.get('category')
+
+    print(json.loads(category_name))
+
+    #category_id = get_category_id(category, cursor)
+
+    #katRequest {
+    #    "kategoria" : ""
+    #}
+
+    conn.commit()
+    conn.close()
+
+    return jsonify(response)
+
 
 """
 @app.route("/menu" , methods=["POST"])
@@ -128,8 +152,6 @@ def grab_menu():
 
     return jsonify(response_menu)
 """
-
-
 
 if __name__ == "__main__": 
     app.run()              
