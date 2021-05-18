@@ -8,7 +8,7 @@ CORS(app)
 
 def get_category_id(category_name, cursor):
 
-    command = f"SELECT id from categories WHERE category = '{category}'"
+    command = f"SELECT id from categories WHERE category = '{category_name}'"
 
     cursor.execute(command)
 
