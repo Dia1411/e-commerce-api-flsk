@@ -326,11 +326,14 @@ def delete_products():
 
     product_id = request.args.get('product_id')
 
-    cursor.execute("delete from products where id = %s;",(product_id,))
+    print("Product ID", product_id, "PRODUCT ID TYPE", type(product_id))
+
+    cursor.execute("DELETE FROM products WHERE id = %s;", (product_id,))
 
     conn.commit()
 
     return "1"
+
 
 """
 @app.route("/menu" , methods=["POST"])
