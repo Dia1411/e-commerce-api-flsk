@@ -292,7 +292,8 @@ def edit_products():
     print("to_edit_json", to_edit_json)
 
     conn.commit()
-
+    
+    return "1"
 
 @app.route("/to_edit_products", methods=["POST"])
 def owners_products():
@@ -333,7 +334,6 @@ def delete_products():
     conn.commit()
 
     return "1"
-
 
 
 """
