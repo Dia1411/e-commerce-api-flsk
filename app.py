@@ -51,6 +51,7 @@ def categories():
         for filter_option in filter_options:
             
             current_filters_working_list.get('values').append(filter_option[0])
+            current_filters_working_list.update("checked" : None)
 
         fetched_filters_index += 1
 
@@ -197,6 +198,7 @@ def filter():
 
     return "1"
     
+
 """
 @app.route("/menu" , methods=["POST"])
 def grab_menu():
