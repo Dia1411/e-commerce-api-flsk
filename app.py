@@ -171,7 +171,7 @@ def products():
     
     products = cursor.fetchall()[0]
 
-    response = dict(zip(columns, product))
+    response = dict(zip(columns, products))
 
     print(response)
 
