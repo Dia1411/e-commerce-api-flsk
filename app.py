@@ -303,6 +303,8 @@ def owners_products():
     product_owner = request.args.get('owner')
 
     cursor.execute("SELECT creation_time, details, owner, spot  FROM products WHERE owner = %s", (product_owner,))
+    
+    columns = ('creation_time', 'details', 'owner', 'spot')
 
     response = []
 
