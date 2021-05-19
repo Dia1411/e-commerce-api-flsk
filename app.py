@@ -169,7 +169,9 @@ def products():
   
     cursor.execute(f"SELECT creation_time, details, owner, spot  FROM products WHERE spot = '{product_name}';")
     
-    products = cursor.fetchall()[0]
+    products = cursor.fetchall()
+    
+    print(products)
 
     response = dict(zip(columns, products))
 
