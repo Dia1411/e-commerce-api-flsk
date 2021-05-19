@@ -253,11 +253,13 @@ def search():
 
     filter_data = request.form.get('query_text').lower()
 
-    commands =  f"SELECT spot, details->> 'name', json_array_elements(details->'photos'), details->> 'price', details->>'kategoria' FROM products WHERE LOWER(spot) LIKE %s LIMIT 5"
+    return_number = request.form.get('query_product')
+
+    commands =  "SELECT spot, details->> 'name', details#>'{photos,0}', details->> 'price', details->>'kategoria' FROM products WHERE LOWER(spot) LIKE %s LIMIT %s"
 
     print("%" + filter_data + "%")
 
-    data = ("%" + filter_data + "%", )
+    data = ("%" + filter_data + "%", return_number)
 
     cursor.execute(commands, data)
 
@@ -276,6 +278,8 @@ def search():
     print(response, len(response))
 
     return jsonify(response)
+
+
 
 
 """
