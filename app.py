@@ -253,9 +253,9 @@ def search():
 
     commands =  f"SELECT spot, details->> 'name', details->> 'photos', details->> 'price', details->>'kategoria'  FROM products WHERE spot LIKE %s LIMIT 5"
 
-    print(filter_data)
+    print("%" + filter_data + "%")
 
-    data = (filter_data,)
+    data = ("%" + filter_data + "%", )
 
     cursor.execute(commands, data)
 
