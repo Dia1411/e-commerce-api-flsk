@@ -280,7 +280,6 @@ def search():
     return jsonify(response)
 
 
-
 @app.route("/edit", methods=["POST"])
 def edit_products():
 
@@ -317,6 +316,7 @@ def owners_products():
 
     return jsonify(response)
 
+
 @app.route("/delete_products", methods=["POST"])
 def delete_products():
 
@@ -324,9 +324,13 @@ def delete_products():
 
     cursor = conn.cursor()  
 
-    product_owner = request.args.get('owner')
+    product_id = request.args.get('product_id')
 
+    cursor.execute("delete from products where id = %s;",(product_id,)))
+    
+    conn.commit()
 
+    return "1"
 
 """
 @app.route("/menu" , methods=["POST"])
