@@ -142,6 +142,7 @@ def products_and_filters():
 
             current_filters_working_list.update({f"checked{index}" : None})
 
+            index += 1
 
         fetched_filters_index += 1
 
