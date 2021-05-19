@@ -193,7 +193,7 @@ def filter():
     
     category_id = get_category_id(filter_data['category'], cursor)
 
-    commands =  f"SELECT * FROM products WHERE category_id = {category_id}"
+    commands =  f"SELECT creation_time, details, owner, spot FROM products WHERE category_id = {category_id}"
 
     index = 0
 
@@ -225,15 +225,20 @@ def filter():
 
     data = tuple(data_json)
 
+    print(f"Data Paramethers : {data}")
+
     cursor.execute(commands, data)
+
+    columns = ('creation_time', 'details', 'owner', 'spot')
 
     products = cursor.fetchall()
 
-    #db.execute("SELECT * FROM books WHERE id= :id",{"id": book_id})
+    for product in products: 
+        response.get("produktet").append(dict(zip(columns, product)))
 
-    print(products)
+    print(response['produktet'])
 
-    return "1"
+    return jsonify(response)
     
     
 """
