@@ -189,11 +189,37 @@ def filter():
 
     cursor = conn.cursor()  
 
-    filter_data = json.loads(request.form.get('product_data'))
+    filter_data = json.loads(request.form.get('filter_data'))
+    
+    category_id = get_category_id(filter_data['category'], cursor)
 
-    print(filter_data)
+    commands =  f"SELECT * FROM products WHERE category_id = {category_id}"
+
+    index = 0
+
+    while index < len(filter_data['filters']):
+        
+        if filter_data['filters'][index]['kategoria'] == "price":
+            command = f" AND (details->>'price')::NUMERIC > {filter_data['filters'][index]['min_value']} AND (details->>'price')::NUMERIC < {filter_data['filters'][index]['max_value']}"
+        else:
+            command = f" AND details --> '{filter_data['filters'][index]['kategoria']}' = '{filter_data['filters'][index]['value']}'"
+
+        commands += command
+        
+        if index == len(filter_data['filters']) -1:
+            commands += f" LIMIT {filter_data['last']};"
+
+        index += 1
 
     response = {"produktet" : []}
+
+    print(f"\nCommand is : {commands}\n")
+
+    cursor.execute(commands)
+
+    products = cursor.fetchall()
+
+    print(products)
 
     return "1"
     
