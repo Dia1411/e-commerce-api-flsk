@@ -200,9 +200,10 @@ def filter():
     while index < len(filter_data['filters']):
         
         if filter_data['filters'][index]['kategoria'] == "price":
+
             command = f" AND (details->>'price')::NUMERIC > {filter_data['filters'][index]['min_value']} AND (details->>'price')::NUMERIC < {filter_data['filters'][index]['max_value']}"
         else:
-            command = f" AND details --> '{filter_data['filters'][index]['kategoria']}' = '{filter_data['filters'][index]['value']}'"
+            command = f" AND details ->> '{filter_data['filters'][index]['kategoria']}' = '{filter_data['filters'][index]['value']}'"
 
         commands += command
         
