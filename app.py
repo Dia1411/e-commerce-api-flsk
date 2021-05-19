@@ -259,6 +259,8 @@ def search():
 
     products = cursor.fetchall()
 
+    columns = ("spot", "name", "photos", "price", "kategoria")
+
     respone = []
 
     for product in products: 
