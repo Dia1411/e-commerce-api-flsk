@@ -204,6 +204,7 @@ def filter():
         if filter_data['filters'][index]['kategoria'] == "price":
 
             command = f" AND (details->>'price')::NUMERIC > {filter_data['filters'][index]['min_value']} AND (details->>'price')::NUMERIC < {filter_data['filters'][index]['max_value']}"
+        
         else:
             filter_vale = filter_data['filters'][index]['value'].replace("'","\'")
 
@@ -241,6 +242,33 @@ def filter():
     return jsonify(response)
     
     
+@app.route("/search", methods=["POST"])
+def search():
+    
+    conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
+
+    cursor = conn.cursor()  
+
+    filter_data = json.loads(request.form.get('query_text'))
+
+    commands =  f"SELECT spot, details->> 'name', details->> 'photos', details->> 'price', details->>'kategoria'  FROM products WHERE spot LIKE %s LIMIT 5"
+
+    data = (filter_data,)
+
+    cursor.execute(commands, data)
+
+    products = cursor.fetchall()
+
+    respone = []
+
+    for product in products: 
+        response.append(dict(zip(columns, product)))
+
+    print(response, len(response))
+
+    return jsonify(respone)
+
+
 """
 @app.route("/menu" , methods=["POST"])
 def grab_menu():
