@@ -48,10 +48,13 @@ def categories():
 
         current_filters_working_list = response.get("filtrat")[fetched_filters_index]
 
+        index = 0
+
         for filter_option in filter_options:
             
             current_filters_working_list.get('values').append(filter_option[0])
-            current_filters_working_list.update({"checked" : None})
+            current_filters_working_list.update({f"checked{index}" : None})
+            index += 1
 
         fetched_filters_index += 1
 
