@@ -48,13 +48,9 @@ def categories():
 
         current_filters_working_list = response.get("filtrat")[fetched_filters_index]
 
-        index = 0
-
         for filter_option in filter_options:
             
             current_filters_working_list.get('values').append(filter_option[0])
-            current_filters_working_list.update({f"checked{index}" : None})
-            index += 1
 
         fetched_filters_index += 1
 
@@ -130,7 +126,7 @@ def products_and_filters():
 
         current_working_filter = fetched_filters[fetched_filters_index][0]
 
-        response.get("filtrat").append({"value" : None, "checked": None,"emri" : current_working_filter.replace("_hyphen_", "-").replace("_asgn_", "&").replace("_", " ").upper(), "values" : [], "value" : None})
+        response.get("filtrat").append({"value" : None, "emri" : current_working_filter.replace("_hyphen_", "-").replace("_asgn_", "&").replace("_", " ").upper(), "values" : [], "value" : None})
 
         cursor.execute(f"SELECT {current_working_filter} FROM filter{category_id} WHERE {current_working_filter} != 'NULL';")
 
@@ -138,9 +134,14 @@ def products_and_filters():
 
         current_filters_working_list = response.get("filtrat")[fetched_filters_index]
 
+        index = 0
+
         for filter_option in filter_options:
             
             current_filters_working_list.get('values').append(filter_option[0])
+
+            current_filters_working_list.update({f"checked{index}" : None})
+
 
         fetched_filters_index += 1
 
@@ -201,7 +202,7 @@ def filter():
 
     return "1"
     
-
+    
 """
 @app.route("/menu" , methods=["POST"])
 def grab_menu():
