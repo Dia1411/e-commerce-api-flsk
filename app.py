@@ -197,6 +197,8 @@ def filter():
 
     index = 0
 
+    data_json = {}
+
     while index < len(filter_data['filters']):
         
         if filter_data['filters'][index]['kategoria'] == "price":
@@ -204,12 +206,14 @@ def filter():
             command = f" AND (details->>'price')::NUMERIC > {filter_data['filters'][index]['min_value']} AND (details->>'price')::NUMERIC < {filter_data['filters'][index]['max_value']}"
         else:
             filter_vale = filter_data['filters'][index]['value'].replace("'","\'")
-            command = f" AND details ->> '{filter_data['filters'][index]['kategoria']}' = '{filter_data['filters'][index]['value']}'"
+            command = f" AND details ->> '{filter_data['filters'][index]['kategoria']}' = :value{index}"
 
         commands += command
         
         if index == len(filter_data['filters']) -1:
             commands += f" LIMIT {filter_data['last']};"
+
+        data_json.update({f"value{index}" : filter_data['filters'][index]['value']})
 
         index += 1
 
@@ -217,9 +221,11 @@ def filter():
 
     print(f"\nCommand is : {commands}\n")
 
-    cursor.execute(commands)
+    cursor.execute(commands, data_json)
 
     products = cursor.fetchall()
+
+    #db.execute("SELECT * FROM books WHERE id= :id",{"id": book_id})
 
     print(products)
 
