@@ -326,8 +326,8 @@ def delete_products():
 
     product_id = request.args.get('product_id')
 
-    cursor.execute("delete from products where id = %s;",(product_id,)))
-    
+    cursor.execute("delete from products where id = %s;",(product_id,))
+
     conn.commit()
 
     return "1"
