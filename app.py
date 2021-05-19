@@ -287,7 +287,9 @@ def edit_products():
 
     cursor = conn.cursor()  
 
-    return_number = json.loads(request.form.get('to_edit'))
+    to_edit_json = json.loads(request.form.get('to_edit'))
+
+    print("to_edit_json", to_edit_json)
 
     conn.commit()
 
@@ -326,13 +328,12 @@ def delete_products():
 
     product_id = request.args.get('product_id')
 
-    print("Product ID", product_id, "PRODUCT ID TYPE", type(product_id))
-
     cursor.execute("DELETE FROM products WHERE id = %s;", (product_id,))
 
     conn.commit()
 
     return "1"
+
 
 
 """
