@@ -302,9 +302,9 @@ def owners_products():
 
     product_owner = request.args.get('owner')
 
-    cursor.execute("SELECT creation_time, details, owner, spot  FROM products WHERE owner = %s", (product_owner,))
-    
-    columns = ('creation_time', 'details', 'owner', 'spot')
+    cursor.execute("SELECT id, creation_time, details, owner, spot  FROM products WHERE owner = %s", (product_owner,))
+
+    columns = ('id','creation_time', 'details', 'owner', 'spot')
 
     response = []
 
@@ -316,6 +316,17 @@ def owners_products():
     conn.commit()
 
     return jsonify(response)
+
+@app.route("/delete_products", methods=["POST"])
+def delete_products():
+
+    conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
+
+    cursor = conn.cursor()  
+
+    product_owner = request.args.get('owner')
+
+
 
 """
 @app.route("/menu" , methods=["POST"])
