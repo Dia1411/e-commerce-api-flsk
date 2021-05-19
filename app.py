@@ -261,7 +261,9 @@ def search():
 
     columns = ("spot", "name", "photos", "price", "kategoria")
 
-    respone = []
+    print("products : ", products)
+
+    response = []
 
     for product in products: 
         response.append(dict(zip(columns, product)))
