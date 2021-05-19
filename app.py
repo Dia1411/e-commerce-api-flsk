@@ -281,6 +281,39 @@ def search():
 
 
 
+@app.route("/edit", methods=["POST"])
+def edit_products():
+
+    conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
+
+    cursor = conn.cursor()  
+
+    return_number = json.loads(request.form.get('to_edit'))
+
+    conn.commit()
+
+
+@app.route("/to_edit_products", methods=["POST"])
+def owners_products():
+
+    conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
+
+    cursor = conn.cursor()  
+
+    product_owner = request.args.get('owner')
+
+    cursor.execute("SELECT creation_time, details, owner, spot  FROM products WHERE owner = %s", (product_owner,))
+
+    response = []
+
+    products = cursor.fetchall()
+
+    for product in products: 
+        response.append(dict(zip(columns, product)))
+
+    conn.commit()
+
+    return jsonify(response)
 
 """
 @app.route("/menu" , methods=["POST"])
