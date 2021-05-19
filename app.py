@@ -203,6 +203,7 @@ def filter():
 
             command = f" AND (details->>'price')::NUMERIC > {filter_data['filters'][index]['min_value']} AND (details->>'price')::NUMERIC < {filter_data['filters'][index]['max_value']}"
         else:
+            filter_vale = filter_data['filters'][index]['value'].replace("'","\'")
             command = f" AND details ->> '{filter_data['filters'][index]['kategoria']}' = '{filter_data['filters'][index]['value']}'"
 
         commands += command
