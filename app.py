@@ -251,7 +251,7 @@ def search():
 
     filter_data = request.form.get('query_text').lower()
 
-    commands =  f"SELECT spot, details->> 'name', details->> 'photos', details->> 'price', details->>'kategoria' FROM products WHERE LOWER(spot) LIKE %s LIMIT 5"
+    commands =  f"SELECT spot, details->> 'name', json_array_elements(details->'photos'), details->> 'price', details->>'kategoria' FROM products WHERE LOWER(spot) LIKE %s LIMIT 5"
 
     print("%" + filter_data + "%")
 
@@ -268,6 +268,7 @@ def search():
     response = []
 
     for product in products: 
+        
         response.append(dict(zip(columns, product)))
 
     print(response, len(response))
