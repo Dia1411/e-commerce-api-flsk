@@ -467,7 +467,7 @@ def sort_newest():
 
 
 @app.route("/sort_low_high", methods=["POST"])
-def sort_newest():
+def sort_low_high():
 
     conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
 
