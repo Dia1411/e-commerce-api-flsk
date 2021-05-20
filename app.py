@@ -275,7 +275,6 @@ def search():
 
 
 
-
 @app.route("/search_click", methods=["POST"])
 def search_click():
 
@@ -285,9 +284,9 @@ def search_click():
 
     response = {"filtrat" : [], "produktet" : []}
 
-    filter_data = request.form.get('query_text').lower()
+    filter_data = request.args.get('query_text').lower()
 
-    return_number = request.form.get('query_product')
+    return_number = request.args.get('query_product')
 
     cursor.execute("SELECT category_id, creation_time, details, owner, spot FROM products WHERE LOWER(spot) LIKE %s LIMIT %s", ("%" + filter_data.lower() + "%", return_number))
 
@@ -435,6 +434,7 @@ def highest_evaluation():
         filters_index += 1
 
     return jsonify(response)
+
 
 
 
