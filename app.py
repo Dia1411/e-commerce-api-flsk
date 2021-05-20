@@ -329,6 +329,8 @@ def search_click():
 
             filters_index += 1
 
+    print(response)
+
     return jsonify(response)
 
 
