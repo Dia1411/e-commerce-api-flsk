@@ -341,7 +341,7 @@ def newest():
 
     response = {"filtrat" : [], "produktet" : []}
 
-    return_number = request.form.get('query_product')
+    return_number = request.args.get('query_product')
 
     cursor.execute("SELECT category_id, creation_time, details, owner, spot FROM products ORDER BY creation_time DESC LIMIT %s", (return_number, ))
 
@@ -394,7 +394,7 @@ def highest_evaluation():
 
     response = {"filtrat" : [], "produktet" : []}
 
-    return_number = request.form.get('query_product')
+    return_number = request.args.get('query_product')
 
     cursor.execute("SELECT category_id, creation_time, details, owner, spot FROM products ORDER BY (details->>'price')::NUMERIC DESC, (details->>'price')::NUMERIC DESC LIMIT %s", (return_number, ))
 
@@ -434,6 +434,57 @@ def highest_evaluation():
                 current_working_filters_value_list.append({"emri" : filter_option, "checked" : False})
 
         filters_index += 1
+
+    return jsonify(response)
+
+
+
+
+
+
+
+@app.route("/sort_newest", methods=["POST"])
+def sort_newest():
+
+    conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
+
+    cursor = conn.cursor()  
+
+    response = {"produktet" : []}
+
+    produc_id_list = request.form.get('produc_id_list')
+
+    return_number = request.form.get('query_product')
+
+    cursor.execute("SELECT id, creation_time, details, owner, spot FROM products WHERE id IN %s ORDER BY creation_time DESC LIMIT %s", (produc_id_list, return_number))
+
+    columns = ('id', 'creation_time', 'details', 'owner', 'spot')
+
+    for dt in cursor.fetchall():
+        response['produktet'].append(dict(zip(columns, (dt[1], dt[2], dt[3], dt[4]))))
+
+    return jsonify(response)
+
+
+@app.route("/sort_low_high", methods=["POST"])
+def sort_newest():
+
+    conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
+
+    cursor = conn.cursor()  
+
+    response = {"produktet" : []}
+
+    produc_id_list = request.form.get('produc_id_list')
+
+    return_number = request.form.get('query_product')
+
+    cursor.execute("SELECT id, creation_time, details, owner, spot FROM products WHERE id IN %s ORDER BY (details->>'price')::NUMERIC ASC LIMIT %s", (produc_id_list, return_number))
+
+    columns = ('id', 'creation_time', 'details', 'owner', 'spot')
+
+    for dt in cursor.fetchall():
+        response['produktet'].append(dict(zip(columns, (dt[1], dt[2], dt[3], dt[4]))))
 
     return jsonify(response)
 
