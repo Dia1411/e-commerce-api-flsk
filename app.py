@@ -112,7 +112,6 @@ def products_and_filters():
 
     print(f"Category ID : {category_id}")
 
-
     cursor.execute(f"SELECT d.key, d.value FROM filters_table JOIN json_each(filters_table.filters::json) d ON true WHERE category_id = {category_id};")
 
     data = cursor.fetchall()
@@ -134,9 +133,9 @@ def products_and_filters():
 
         filters_index += 1
 
-    columns = ('creation_time', 'details', 'owner', 'spot')
+    columns = ('id', 'creation_time', 'details', 'owner', 'spot')
   
-    cursor.execute(f"SELECT creation_time, details, owner, spot  FROM products WHERE category_id = {category_id} LIMIT {number_of_products};")
+    cursor.execute(f"SELECT id, creation_time, details, owner, spot  FROM products WHERE category_id = {category_id} LIMIT {number_of_products};")
     
     products = cursor.fetchall()
 
@@ -189,7 +188,7 @@ def filter():
     
     category_id = get_category_id(filter_data['category'], cursor)
 
-    commands =  f"SELECT creation_time, details, owner, spot FROM products WHERE category_id = {category_id}"
+    commands =  f"SELECT id, creation_time, details, owner, spot FROM products WHERE category_id = {category_id}"
 
     index = 0
 
@@ -226,7 +225,7 @@ def filter():
 
     cursor.execute(commands, data)
 
-    columns = ('creation_time', 'details', 'owner', 'spot')
+    columns = ('id', 'creation_time', 'details', 'owner', 'spot')
 
     products = cursor.fetchall()
 
@@ -274,7 +273,6 @@ def search():
     return jsonify(response)
 
 
-
 @app.route("/search_click", methods=["POST"])
 def search_click():
 
@@ -288,18 +286,18 @@ def search_click():
 
     return_number = request.args.get('query_product')
 
-    cursor.execute("SELECT category_id, creation_time, details, owner, spot FROM products WHERE LOWER(spot) LIKE %s LIMIT %s", ("%" + filter_data.lower() + "%", return_number))
+    cursor.execute("SELECT category_id, id, creation_time, details, owner, spot FROM products WHERE LOWER(spot) LIKE %s LIMIT %s", ("%" + filter_data.lower() + "%", return_number))
 
     data = cursor.fetchall()
 
     id_list = tuple([d[0] for d in data])
 
-    columns = ('creation_time', 'details', 'owner', 'spot')
+    columns = ('id', 'creation_time', 'details', 'owner', 'spot')
 
     response = {"produktet" : [], "filtrat" : []}
 
     for dt in data:
-        response['produktet'].append(dict(zip(columns, (dt[1], dt[2], dt[3], dt[4]))))
+        response['produktet'].append(dict(zip(columns, (dt[1], dt[2], dt[3], dt[4], dt[5]))))
 
     if len(id_list) > 0:
 
@@ -438,9 +436,6 @@ def highest_evaluation():
         filters_index += 1
 
     return jsonify(response)
-
-
-
 
 
 @app.route("/edit", methods=["POST"])
