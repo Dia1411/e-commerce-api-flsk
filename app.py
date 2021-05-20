@@ -449,7 +449,7 @@ def best_deals():
 
     return_number = request.args.get('query_product')
 
-    cursor.execute("SELECT category_id, id, creation_time, details, owner, spot From products WHERE jsonb_typeof((details->'priceLow')::jsonb) != 'null' ORDER BY (details->>'likes')::NUMERIC DESC, (details->>'likers')::NUMERIC DESC LIMIT 5; %s", (return_number, ))
+    cursor.execute("SELECT category_id, id, creation_time, details, owner, spot From products WHERE jsonb_typeof((details->'priceLow')::jsonb) != 'null' ORDER BY (details->>'likes')::NUMERIC DESC, (details->>'likers')::NUMERIC DESC LIMIT  %s;", (return_number, ))
 
     data = cursor.fetchall()
 
@@ -489,6 +489,8 @@ def best_deals():
         filters_index += 1
 
     return jsonify(response)
+
+
 
 
 
