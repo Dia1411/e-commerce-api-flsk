@@ -28,31 +28,27 @@ def categories():
 
     response = {"kategoria" : category, "filtrat" : []}
 
-    filters = []
+    cursor.execute(f"SELECT d.key, d.value FROM filters_table JOIN json_each(filters_table.filters::json) d ON true WHERE category_id = {category_id};")
 
-    cursor.execute(f"SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'filter{category_id}';")
+    data = cursor.fetchall()
 
-    fetched_filters = cursor.fetchall()
+    filtrat = [d[0] for d in data]
 
-    fetched_filters_index = 0
+    filters_index = 0
 
-    while fetched_filters_index < len(fetched_filters):
+    for filtr in filtrat:
 
-        current_working_filter = fetched_filters[fetched_filters_index][0]
+        response.get("filtrat").append({"value" : None, "emri" : filtr.replace("_hyphen_", "-").replace("_asgn_", "&").replace("_", " ").upper(), "values" : [], "value" : None})
 
-        response.get("filtrat").append({"emri" : current_working_filter.replace("_hyphen_", "-").replace("_asgn_", "&").replace("_", " ").upper(), "values" : [], "value" : None})
+        filter_options = [d[1] for d in  data if d[0] == filtr][0]
 
-        cursor.execute(f"SELECT {current_working_filter} FROM filter{category_id} WHERE {current_working_filter} != 'NULL';")
+        current_working_filters_value_list = response.get("filtrat")[filters_index].get("values")
 
-        filter_options = cursor.fetchall()
+        for option in filter_options:
+            current_working_filters_value_list.append({"emri" : option, "checked" : False})
 
-        current_filters_working_list = response.get("filtrat")[fetched_filters_index]
+        filters_index += 1
 
-        for filter_option in filter_options:
-            
-            current_filters_working_list.get('values').append(filter_option[0])
-
-        fetched_filters_index += 1
 
     conn.commit()
 
@@ -61,6 +57,7 @@ def categories():
     print(f"Response is : {response}")
 
     return jsonify(response)
+
 
 
 @app.route("/create_products" , methods=["POST"])
@@ -116,29 +113,28 @@ def products_and_filters():
 
     print(f"Category ID : {category_id}")
 
-    cursor.execute(f"SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'filter{category_id}';")
-    
-    fetched_filters = cursor.fetchall()
 
-    fetched_filters_index = 0
+    cursor.execute(f"SELECT d.key, d.value FROM filters_table JOIN json_each(filters_table.filters::json) d ON true WHERE category_id = {category_id};")
 
-    while fetched_filters_index < len(fetched_filters):
+    data = cursor.fetchall()
 
-        current_working_filter = fetched_filters[fetched_filters_index][0]
+    filtrat = [d[0] for d in data]
 
-        response.get("filtrat").append({"value" : None, "emri" : current_working_filter.replace("_hyphen_", "-").replace("_asgn_", "&").replace("_", " ").upper(), "values" : [], "value" : None})
+    filters_index = 0
 
-        cursor.execute(f"SELECT {current_working_filter} FROM filter{category_id} WHERE {current_working_filter} != 'NULL';")
+    for filtr in filtrat:
 
-        filter_options = cursor.fetchall()
+        response.get("filtrat").append({"value" : None, "emri" : filtr.replace("_hyphen_", "-").replace("_asgn_", "&").replace("_", " ").upper(), "values" : [], "value" : None})
 
-        current_filters_working_list = response.get("filtrat")[fetched_filters_index]
+        filter_options = [d[1] for d in  data if d[0] == filtr][0]
 
-        for filter_option in filter_options:
-            
-            current_filters_working_list.get('values').append({"emri" : filter_option[0], "checked" : False})
+        current_working_filters_value_list = response.get("filtrat")[filters_index].get("values")
 
-        fetched_filters_index += 1
+        for option in filter_options:
+            current_working_filters_value_list.append({"emri" : option, "checked" : False})
+
+        filters_index += 1
+
 
     columns = ('creation_time', 'details', 'owner', 'spot')
   
@@ -294,6 +290,7 @@ def edit_products():
     conn.commit()
     
     return "1"
+
 
 @app.route("/to_edit_products", methods=["POST"])
 def owners_products():
