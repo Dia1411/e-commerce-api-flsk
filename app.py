@@ -301,31 +301,33 @@ def search_click():
     for dt in data:
         response['produktet'].append(dict(zip(columns, (dt[1], dt[2], dt[3], dt[4]))))
 
-    command2 = "SELECT d.key, json_agg(d.value) FROM filters_table JOIN json_each(filters_table.filters::json) d ON true WHERE filters_table.category_id IN %s GROUP BY d.key;"
+    if len(id_list) > 0:
 
-    data = (id_list, )
+        command2 = "SELECT d.key, json_agg(d.value) FROM filters_table JOIN json_each(filters_table.filters::json) d ON true WHERE filters_table.category_id IN %s GROUP BY d.key;"
 
-    cursor.execute(command2, data)
+        data = (id_list, )
 
-    data = cursor.fetchall()
+        cursor.execute(command2, data)
 
-    filters_index = 0
+        data = cursor.fetchall()
 
-    for row in data:
+        filters_index = 0
 
-        response.get("filtrat").append({"value" : None, "emri" : row[0].replace("_hyphen_", "-").replace("_asgn_", "&").replace("_", " ").upper(), "values" : [], "value" : None})
-        
-        filters_array = [j for i in row[1] for j in i]
+        for row in data:
 
-        current_working_filters_value_list = response.get("filtrat")[filters_index].get("values")
-
-        for filter_option in filters_array:
+            response.get("filtrat").append({"value" : None, "emri" : row[0].replace("_hyphen_", "-").replace("_asgn_", "&").replace("_", " ").upper(), "values" : [], "value" : None})
             
-            if filter_option not in [d.get('emri') for d in current_working_filters_value_list]:
+            filters_array = [j for i in row[1] for j in i]
 
-                current_working_filters_value_list.append({"emri" : filter_option, "checked" : False})
+            current_working_filters_value_list = response.get("filtrat")[filters_index].get("values")
 
-        filters_index += 1
+            for filter_option in filters_array:
+                
+                if filter_option not in [d.get('emri') for d in current_working_filters_value_list]:
+
+                    current_working_filters_value_list.append({"emri" : filter_option, "checked" : False})
+
+            filters_index += 1
 
     return jsonify(response)
 
