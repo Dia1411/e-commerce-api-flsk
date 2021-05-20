@@ -59,7 +59,6 @@ def categories():
     return jsonify(response)
 
 
-
 @app.route("/create_products" , methods=["POST"])
 def create_products(): 
 
@@ -134,7 +133,6 @@ def products_and_filters():
             current_working_filters_value_list.append({"emri" : option, "checked" : False})
 
         filters_index += 1
-
 
     columns = ('creation_time', 'details', 'owner', 'spot')
   
@@ -274,6 +272,171 @@ def search():
     print(response, len(response))
 
     return jsonify(response)
+
+
+
+
+@app.route("/search_click", methods=["POST"])
+def search_click():
+
+    conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
+
+    cursor = conn.cursor()  
+
+    response = {"filtrat" : [], "produktet" : []}
+
+    filter_data = request.form.get('query_text').lower()
+
+    return_number = request.form.get('query_product')
+
+    cursor.execute("SELECT category_id, creation_time, details, owner, spot FROM products WHERE LOWER(spot) LIKE %s LIMIT %s", ("%" + filter_data.lower() + "%", return_number))
+
+    data = cursor.fetchall()
+
+    id_list = tuple([d[0] for d in data])
+
+    columns = ('creation_time', 'details', 'owner', 'spot')
+
+    response = {"produktet" : [], "filtrat" : []}
+
+    for dt in data:
+        response['produktet'].append(dict(zip(columns, (dt[1], dt[2], dt[3], dt[4]))))
+
+    command2 = "SELECT d.key, json_agg(d.value) FROM filters_table JOIN json_each(filters_table.filters::json) d ON true WHERE filters_table.category_id IN %s GROUP BY d.key;"
+
+    data = (id_list, )
+
+    cursor.execute(command2, data)
+
+    data = cursor.fetchall()
+
+    filters_index = 0
+
+    for row in data:
+
+        response.get("filtrat").append({"value" : None, "emri" : row[0].replace("_hyphen_", "-").replace("_asgn_", "&").replace("_", " ").upper(), "values" : [], "value" : None})
+        
+        filters_array = [j for i in row[1] for j in i]
+
+        current_working_filters_value_list = response.get("filtrat")[filters_index].get("values")
+
+        for filter_option in filters_array:
+            
+            if filter_option not in [d.get('emri') for d in current_working_filters_value_list]:
+
+                current_working_filters_value_list.append({"emri" : filter_option, "checked" : False})
+
+        filters_index += 1
+
+    return jsonify(response)
+
+
+@app.route("/newest", methods=["POST"])
+def newest():
+
+    conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
+
+    cursor = conn.cursor()  
+
+    response = {"filtrat" : [], "produktet" : []}
+
+    return_number = request.form.get('query_product')
+
+    cursor.execute("SELECT category_id, creation_time, details, owner, spot FROM products ORDER BY creation_time DESC LIMIT %s", (return_number, ))
+
+    data = cursor.fetchall()
+
+    id_list = tuple([d[0] for d in data])
+
+    columns = ('creation_time', 'details', 'owner', 'spot')
+
+    response = {"produktet" : [], "filtrat" : []}
+
+    for dt in data:
+        response['produktet'].append(dict(zip(columns, (dt[1], dt[2], dt[3], dt[4]))))
+
+    command2 = "SELECT d.key, json_agg(d.value) FROM filters_table JOIN json_each(filters_table.filters::json) d ON true WHERE filters_table.category_id IN %s GROUP BY d.key;"
+
+    data = (id_list, )
+
+    cursor.execute(command2, data)
+
+    data = cursor.fetchall()
+
+    filters_index = 0
+
+    for row in data:
+
+        response.get("filtrat").append({"value" : None, "emri" : row[0].replace("_hyphen_", "-").replace("_asgn_", "&").replace("_", " ").upper(), "values" : [], "value" : None})
+        
+        filters_array = [j for i in row[1] for j in i]
+
+        current_working_filters_value_list = response.get("filtrat")[filters_index].get("values")
+
+        for filter_option in filters_array:
+            
+            if filter_option not in [d.get('emri') for d in current_working_filters_value_list]:
+
+                current_working_filters_value_list.append({"emri" : filter_option, "checked" : False})
+
+        filters_index += 1
+
+    return jsonify(response)
+
+
+@app.route("/highest_evaluation", methods=["POST"])
+def highest_evaluation():
+
+    conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
+
+    cursor = conn.cursor()  
+
+    response = {"filtrat" : [], "produktet" : []}
+
+    return_number = request.form.get('query_product')
+
+    cursor.execute("SELECT category_id, creation_time, details, owner, spot FROM products ORDER BY (details->>'price')::NUMERIC DESC, (details->>'price')::NUMERIC DESC LIMIT %s", (return_number, ))
+
+    data = cursor.fetchall()
+
+    id_list = tuple([d[0] for d in data])
+
+    columns = ('creation_time', 'details', 'owner', 'spot')
+
+    response = {"produktet" : [], "filtrat" : []}
+
+    for dt in data:
+        response['produktet'].append(dict(zip(columns, (dt[1], dt[2], dt[3], dt[4]))))
+
+    command2 = "SELECT d.key, json_agg(d.value) FROM filters_table JOIN json_each(filters_table.filters::json) d ON true WHERE filters_table.category_id IN %s GROUP BY d.key;"
+
+    data = (id_list, )
+
+    cursor.execute(command2, data)
+
+    data = cursor.fetchall()
+
+    filters_index = 0
+
+    for row in data:
+
+        response.get("filtrat").append({"value" : None, "emri" : row[0].replace("_hyphen_", "-").replace("_asgn_", "&").replace("_", " ").upper(), "values" : [], "value" : None})
+        
+        filters_array = [j for i in row[1] for j in i]
+
+        current_working_filters_value_list = response.get("filtrat")[filters_index].get("values")
+
+        for filter_option in filters_array:
+            
+            if filter_option not in [d.get('emri') for d in current_working_filters_value_list]:
+
+                current_working_filters_value_list.append({"emri" : filter_option, "checked" : False})
+
+        filters_index += 1
+
+    return jsonify(response)
+
+
 
 
 @app.route("/edit", methods=["POST"])
