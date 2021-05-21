@@ -530,6 +530,7 @@ def edit_products():
     print("to_edit", to_edit)
 
     for operation in to_edit['operations']:
+
         try:
             if operation['operation'] == "delete":
                 to_edit['operations'].remove(operation)
@@ -577,7 +578,7 @@ def edit_products():
             elif operation['operation'] == 'insert':
 
                 cursor.execute( """  
-                                SELECT jsonb_array_length(details->'photos') 
+                                SELECT json_array_length(details->'photos') 
                                 FROM products 
                                 WHERE id = %s;
                                 """, (product_id, ))
@@ -598,7 +599,7 @@ def edit_products():
 
                 cursor.execute( 
                         """  
-                        SELECT jsonb_array_length(details->'photos') 
+                        SELECT json_array_length(details->'photos') 
                         FROM products 
                         WHERE id = %s;
                         """, (product_id, ))
