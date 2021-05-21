@@ -497,9 +497,19 @@ def filter_redirect():
 
     cursor = conn.cursor()  
 
-    filter_name = request.args.get("filter_name")
 
-    filter_value = request.args.get("filter_value")
+    filter_name = request.form.get("filter_name")
+
+    filter_value = request.form.get("filter_value")
+
+    print(filter_name, filter_value)
+
+
+    filter_name2 = json.loads(request.form.get("filter_name"))
+
+    filter_value2 = json.loads(request.form.get("filter_value"))
+
+    print(filter_name2, filter_value2)
 
     response = {}
 
