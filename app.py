@@ -16,13 +16,15 @@ def get_category_id(category_name, cursor):
 
 
 @app.route("/categories" , methods=["POST"])
-def categories(): 
+def categories(category_name): 
 
     conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
+
     cursor = conn.cursor()  
 
     category = request.form.get('category')
-    category_id = get_category_id(category, cursor)
+    
+    category_id = get_category_id(category_name, cursor)
 
     print(f"Category id is : {category_id}")
 
@@ -48,7 +50,6 @@ def categories():
             current_working_filters_value_list.append({"emri" : option, "checked" : False})
 
         filters_index += 1
-
 
     conn.commit()
 
@@ -101,8 +102,6 @@ def products_and_filters():
     category_name = request.args.get('category')
 
     number_of_products = int(request.args.get('last'))
-
-    #print(type(category_name), "  ", f".{category_name}.", type(number_of_products), f".{number_of_products}.")
 
     print(category_name, number_of_products)
 
@@ -491,8 +490,28 @@ def best_deals():
     return jsonify(response)
 
 
+@app.route("/filter_redirect", methods=["POST"])
+def filter_redirect():
 
+    conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
 
+    cursor = conn.cursor()  
+
+    filter_name = request.args.get("filter_name")
+
+    filter_value = request.args.get("filter_value")
+
+    response = {}
+
+    cursor.execute("select departament, category from categories where id = (select category_id from filters_table where (filters->%s)::jsonb ? %s LIMIT 1);", (filter_name, filter_value))
+
+    data = cursor.fetchall()
+
+    departament, category = data[0][0], data[0][1]
+
+    response.update({"category_name" : category, "linku": f"{departament}-{category}".lower().replace(" ","-")})
+
+    return jsonify(response)
 
 
 @app.route("/sort_newest", methods=["POST"])
