@@ -44,11 +44,12 @@ def categories():
 
         filter_options = [d[1] for d in  data if d[0] == filtr][0]
 
+        print(filter_options)
+
         current_working_filters_value_list = response.get("filtrat")[filters_index].get("values")
 
         for option in filter_options:
-            print("option type ",type(option))
-            current_working_filters_value_list.append({"emri" : json.loads(option), "checked" : False})
+            current_working_filters_value_list.append({"emri" : option, "checked" : False})
 
         filters_index += 1
 
