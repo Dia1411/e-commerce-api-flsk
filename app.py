@@ -511,7 +511,7 @@ def filter_redirect():
 
     departament, category = data[0][0], data[0][1]
 
-    response.update({"category_name" : category, "linku": f"{departament}-{category}".lower().replace(" ","-")})
+    response.update({"departament": departament,"category_name" : category, "linku": f"{departament}-{category}".lower().replace(" ","-")})
 
     return jsonify(response)
 
