@@ -497,7 +497,7 @@ def filter_redirect():
 
     cursor = conn.cursor()  
 
-    filter_name = request.form.get("filter_name")
+    filter_name = request.form.get("filter_name").replace("-", "_hyphen_").replace("&", "_asgn_").replace(" ", "_").lower()
 
     filter_value = request.form.get("filter_value")
 
