@@ -504,13 +504,6 @@ def filter_redirect():
 
     print(filter_name, filter_value)
 
-
-    filter_name2 = json.loads(request.form.get("filter_name"))
-
-    filter_value2 = json.loads(request.form.get("filter_value"))
-
-    print(filter_name2, filter_value2)
-
     response = {}
 
     cursor.execute("select departament, category from categories where id = (select category_id from filters_table where (filters->%s)::jsonb ? %s LIMIT 1);", (filter_name, filter_value))
