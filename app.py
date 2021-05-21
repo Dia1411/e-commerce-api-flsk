@@ -497,12 +497,11 @@ def filter_redirect():
 
     cursor = conn.cursor()  
 
-
     filter_name = request.form.get("filter_name")
 
     filter_value = request.form.get("filter_value")
 
-    print(filter_name, filter_value)
+    print("FILTER'S NAME ", filter_name, " FILTER'S VALUE ", filter_value)
 
     response = {}
 
