@@ -16,7 +16,7 @@ def get_category_id(category_name, cursor):
 
 
 @app.route("/categories" , methods=["POST"])
-def categories(category_name): 
+def categories(): 
 
     conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
 
