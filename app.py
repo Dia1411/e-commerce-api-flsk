@@ -528,7 +528,7 @@ def edit_products():
     to_edit = json.loads(request.form.get('to_edit'))
 
     print("to_edit", to_edit)
-    
+
     for operation in to_edit['operations']:
         try:
             if operation['operation'] == "delete":
@@ -560,7 +560,7 @@ def edit_products():
             print("OPERATION TYPE ", operation['operation'])
 
             if operation['operation'] == 'update':
-                path = "{photos,%s}" % operation['photo_index']
+                path = "{photos,%s}" % operation['photo_uuid']
                 print(path)
                 commands = """  UPDATE products 
                                 SET details = JSONB_SET(
@@ -570,7 +570,7 @@ def edit_products():
                                     false) 
                                 WHERE id = %s;"""
 
-                data = ("{photos,%s}" % operation['photo_index'], json.dumps(operation['new_value']), product_id)
+                data = ("{photos,%s}" % operation['photo_uuid'], json.dumps(operation['new_value']), product_id)
 
                 cursor.execute(commands, data)
 
@@ -584,7 +584,7 @@ def edit_products():
 
                 number_of_photos = cursor.fetchall()[0][0]
 
-                operation['new_value'].update({"photo_index" : number_of_photos})
+                operation['new_value'].update({"photo_uuid" : number_of_photos})
 
                 command = "UPDATE products SET details = JSONB_SET(details, %s, (SELECT (details->'photos') || %s FROM products WHERE id = %s), false) WHERE id = %s;"
 
@@ -619,10 +619,10 @@ def edit_products():
                                             ) 
                                         SELECT JSONB_AGG(photos)
                                         FROM new_photos 
-                                        WHERE photos->>'photo_index' != '%s')) 
+                                        WHERE photos->>'photo_uuid' != '%s')) 
                                     WHERE id = %s;"""
                     
-                    data = ("{%s}" % operation['fieldname'], product_id, operation['photo_index'], product_id)
+                    data = ("{%s}" % operation['fieldname'], product_id, operation['photo_uuid'], product_id)
 
                     cursor.execute(commands, data)
             
