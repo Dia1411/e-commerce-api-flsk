@@ -47,7 +47,8 @@ def categories():
         current_working_filters_value_list = response.get("filtrat")[filters_index].get("values")
 
         for option in filter_options:
-            current_working_filters_value_list.append({"emri" : option, "checked" : False})
+            print("option type ",type(option))
+            current_working_filters_value_list.append({"emri" : json.loads(option), "checked" : False})
 
         filters_index += 1
 
@@ -516,56 +517,6 @@ def filter_redirect():
     return jsonify(response)
 
 
-@app.route("/sort_newest", methods=["POST"])
-def sort_newest():
-
-    conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
-
-    cursor = conn.cursor()  
-
-    response = {"produktet" : []}
-
-    produc_id_list = request.form.get('produc_id_list')
-
-    return_number = request.form.get('query_product')
-
-    cursor.execute("SELECT id, creation_time, details, owner, spot FROM products WHERE id IN %s ORDER BY creation_time DESC LIMIT %s", (produc_id_list, return_number))
-
-    columns = ('id', 'creation_time', 'details', 'owner', 'spot')
-
-    for dt in cursor.fetchall():
-        response['produktet'].append(dict(zip(columns, (dt[1], dt[2], dt[3], dt[4]))))
-
-    return jsonify(response)
-
-
-@app.route("/sort_low_high", methods=["POST"])
-def sort_low_high():
-
-    conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
-
-    cursor = conn.cursor()  
-
-    response = {"produktet" : []}
-
-    produc_id_list = request.form.get('produc_id_list')
-
-    return_number = request.form.get('query_product')
-
-    cursor.execute("SELECT id, creation_time, details, owner, spot FROM products WHERE id IN %s ORDER BY (details->>'price')::NUMERIC ASC LIMIT %s", (produc_id_list, return_number))
-
-    columns = ('id', 'creation_time', 'details', 'owner', 'spot')
-
-    for dt in cursor.fetchall():
-        response['produktet'].append(dict(zip(columns, (dt[1], dt[2], dt[3], dt[4]))))
-
-    return jsonify(response)
-
-
-
-
-
-
 @app.route("/edit", methods=["POST"])
 def edit_products():
 
@@ -573,9 +524,109 @@ def edit_products():
 
     cursor = conn.cursor()  
 
-    to_edit_json = json.loads(request.form.get('to_edit'))
+    to_edit = json.loads(request.form.get('to_edit'))
 
-    print("to_edit_json", to_edit_json)
+    print("to_edit", to_edit)
+
+    for operation in to_edit['operations']:
+        try:
+            if operation['operation'] == "delete":
+                to_edit['operations'].remove(operation)
+                to_edit['operations'].append(operation)
+        except:
+            pass
+
+    product_id = to_edit['product_id']
+
+    for operation in to_edit['operations']:
+
+        if operation['fieldname'] != 'photos':
+            
+            data = ("{%s}" % operation['fieldname'], operation['new_value'], product_id)
+            
+            cursor.execute("""
+                            UPDATE products 
+                            SET details = JSONB_SET(
+                                details::jsonb, 
+                                %s, 
+                                TO_JSONB(%s::TEXT), 
+                                false) 
+                            WHERE id = %s;""", data
+                            )
+
+        else:
+
+            print("OPERATION TYPE ", operation['operation'])
+
+            if operation['operation'] == 'update':
+                path = "{photos,%s}" % operation['photo_index']
+                print(path)
+                commands = """  UPDATE products 
+                                SET details = JSONB_SET(
+                                    details::jsonb, 
+                                    %s, 
+                                    %s, 
+                                    false) 
+                                WHERE id = %s;"""
+
+                data = ("{photos,%s}" % operation['photo_index'], json.dumps(operation['new_value']), product_id)
+
+                cursor.execute(commands, data)
+
+            elif operation['operation'] == 'insert':
+
+                cursor.execute( """  
+                                SELECT jsonb_array_length(details->'photos') 
+                                FROM products 
+                                WHERE id = %s;
+                                """, (product_id, ))
+
+                number_of_photos = cursor.fetchall()[0][0]
+
+                operation['new_value'].update({"photo_index" : number_of_photos})
+
+                command = "UPDATE products SET details = JSONB_SET(details, %s, (SELECT (details->'photos') || %s FROM products WHERE id = %s), false) WHERE id = %s;"
+
+                print(type(json.dumps(operation['new_value'])))
+
+                data = ("{%s}" % operation['fieldname'], json.dumps(operation['new_value']), product_id, product_id)
+
+                cursor.execute(command, data)
+
+            elif operation['operation'] == 'delete':
+
+                cursor.execute( 
+                        """  
+                        SELECT jsonb_array_length(details->'photos') 
+                        FROM products 
+                        WHERE id = %s;
+                        """, (product_id, ))
+
+                if cursor.fetchall()[0][0] == 1:
+
+                    return "0"
+                    
+                else:
+                    commands = """  
+                            UPDATE products 
+                            SET details = JSONB_SET(
+                                details, 
+                                %s, 
+                                (WITH new_photos AS 
+                                    (
+                                        SELECT JSONB_ARRAY_ELEMENTS(details -> 'photos') photos 
+                                        FROM products 
+                                        WHERE id = %s
+                                    ) 
+                                SELECT JSONB_AGG(photos)
+                                FROM new_photos 
+                                WHERE photos->>'photo_index' != '%s')) 
+                            WHERE id = %s;
+                            """
+                    
+                    data = ("{%s}" % operation['fieldname'], product_id, operation['photo_index'], product_id)
+
+                    cursor.execute(commands, data)
 
     conn.commit()
     
@@ -623,6 +674,8 @@ def delete_products():
     return "1"
 
 
+
+
 """
 @app.route("/menu" , methods=["POST"])
 def grab_menu():
@@ -655,6 +708,52 @@ def grab_menu():
         menu_data_index += 1
 
     return jsonify(response_menu)
+
+@app.route("/sort_newest", methods=["POST"])
+def sort_newest():
+
+    conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
+
+    cursor = conn.cursor()  
+
+    response = {"produktet" : []}
+
+    produc_id_list = request.form.get('produc_id_list')
+
+    return_number = request.form.get('query_product')
+
+    cursor.execute("SELECT id, creation_time, details, owner, spot FROM products WHERE id IN %s ORDER BY creation_time DESC LIMIT %s", (produc_id_list, return_number))
+
+    columns = ('id', 'creation_time', 'details', 'owner', 'spot')
+
+    for dt in cursor.fetchall():
+        response['produktet'].append(dict(zip(columns, (dt[1], dt[2], dt[3], dt[4]))))
+
+    return jsonify(response)
+
+@app.route("/sort_low_high", methods=["POST"])
+def sort_low_high():
+
+    conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
+
+    cursor = conn.cursor()  
+
+    response = {"produktet" : []}
+
+    produc_id_list = request.form.get('produc_id_list')
+
+    return_number = request.form.get('query_product')
+
+    cursor.execute("SELECT id, creation_time, details, owner, spot FROM products WHERE id IN %s ORDER BY (details->>'price')::NUMERIC ASC LIMIT %s", (produc_id_list, return_number))
+
+    columns = ('id', 'creation_time', 'details', 'owner', 'spot')
+
+    for dt in cursor.fetchall():
+        response['produktet'].append(dict(zip(columns, (dt[1], dt[2], dt[3], dt[4]))))
+
+    return jsonify(response)
+
+
 """
 
 if __name__ == "__main__": 
