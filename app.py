@@ -616,11 +616,11 @@ def edit_products():
                                 %s, 
                                 (WITH new_photos AS 
                                     (
-                                        SELECT JSONB_ARRAY_ELEMENTS(details -> 'photos') photos 
+                                        SELECT JSON_ARRAY_ELEMENTS(details -> 'photos') photos 
                                         FROM products 
                                         WHERE id = %s
                                     ) 
-                                SELECT JSONB_AGG(photos)
+                                SELECT JSONB_AGG(photos::jsonb)
                                 FROM new_photos 
                                 WHERE photos->>'photo_index' != '%s')) 
                             WHERE id = %s;
