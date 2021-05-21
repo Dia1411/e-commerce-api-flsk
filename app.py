@@ -587,7 +587,7 @@ def edit_products():
 
                 operation['new_value'].update({"photo_index" : number_of_photos})
 
-                command = "UPDATE products SET details = JSONB_SET(details, %s, (SELECT (details->'photos') || %s FROM products WHERE id = %s), false) WHERE id = %s;"
+                command = "UPDATE products SET details = JSONB_SET(details::jsonb, %s, (SELECT (details->'photos') || %s FROM products WHERE id = %s), false) WHERE id = %s;"
 
                 print(type(json.dumps(operation['new_value'])))
 
@@ -612,7 +612,7 @@ def edit_products():
                     commands = """  
                             UPDATE products 
                             SET details = JSONB_SET(
-                                details, 
+                                details::jsonb, 
                                 %s, 
                                 (WITH new_photos AS 
                                     (
