@@ -24,7 +24,7 @@ def categories():
 
     category = request.form.get('category')
     
-    category_id = get_category_id(category_name, cursor)
+    category_id = get_category_id(category, cursor)
 
     print(f"Category id is : {category_id}")
 
