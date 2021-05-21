@@ -49,7 +49,7 @@ def categories():
         current_working_filters_value_list = response.get("filtrat")[filters_index].get("values")
 
         for option in filter_options:
-            current_working_filters_value_list.append({"emri" : option, "checked" : False})
+            current_working_filters_value_list.append(option)
 
         filters_index += 1
 
