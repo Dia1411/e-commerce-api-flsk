@@ -1,22 +1,32 @@
-import csv, sys, psycopg2
-
-
+import csv, sys, psycopg2, json
 
 conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
 
 cursor = conn.cursor()  
 
-filter_name = "lloji"
-filter_value = "Biskota"
+new_value = {
+    "src":"https://www.kokkari.com",
+    "emri":"kokkari.jpg",
+    "photo_uuid" : "js834av"
+}
 
-response = {}
+command = """
+    UPDATE products 
+    SET details = JSONB_SET(
+        details, 
+        '%s', 
+        (WITH new_photos AS 
+            (
+                SELECT JSONB_ARRAY_ELEMENTS(details->'photos') photos 
+                FROM products WHERE id = %s
+            ) 
+        SELECT JSONB_AGG(photos)  || '%s' 
+        FROM new_photos 
+        WHERE photos::jsonb#>> '%s' != 'b423ka')
+    )
+    WHERE id = %s;""" % ("{%s}" % "photos", 1, json.dumps(new_value), "{%s}" % "photo_uuid", 1)
 
-cursor.execute("select departament, category from categories where id = (select category_id from filters_table where (filters->%s)::jsonb ? %s LIMIT 1);", (filter_name, filter_value))
+cursor.execute(command)
 
-data = cursor.fetchall()
-
-departament, category = data[0][0], data[0][1]
-
-response.update({"category_name" : category, "linku": f"{departament}-{category}".lower().replace(" ","-")})
-
-print(response)
+conn.commit()
+print(command)

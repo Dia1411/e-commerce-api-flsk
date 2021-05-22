@@ -143,7 +143,7 @@ ALTER SEQUENCE public.filters_table_id_seq OWNED BY public.filters_table.id;
 
 CREATE TABLE public.products (
     id integer NOT NULL,
-    creation_time integer NOT NULL,
+    creation_time bigint NOT NULL,
     details jsonb NOT NULL,
     owner character varying NOT NULL,
     spot character varying NOT NULL,
@@ -446,6 +446,17 @@ COPY public.categories (id, departament, category) FROM stdin;
 239	Elektroshtepiake	Produkte Smart
 198	Bujqësi & Blegtori	Makineri bujqësore
 21	Materiale Ndërtimi	Makineri ndërtimi
+288	VESHJE FEMRASH	Veshje
+289	VESHJE FEMRASH	Intimo
+290	VESHJE FEMRASH	Këpucë
+291	VESHJE FEMRASH	Aksesorë
+292	VESHJE FEMRASH	Plazh
+293	VESHJE MESHKUJSH	Veshje
+294	VESHJE MESHKUJSH	Intimo
+295	VESHJE MESHKUJSH	Këpucë
+296	VESHJE MESHKUJSH	Aksesorë
+298	VESHJE FËMIJËSH	Vajzë
+299	VESHJE FËMIJËSH	Djalë
 \.
 
 
@@ -692,6 +703,18 @@ COPY public.category_links (id, departament, category, cat_link) FROM stdin;
 237	Lojera & Argetim	Scooters	https://shop.shpresa.al/product-category/lojera-argetim/scooters/
 238	Elektroshtepiake	Kondicioner	https://shop.shpresa.al/product-category/elektroshtepiake/kondicioner/
 239	Elektroshtepiake	Produkte Smart	https://shop.shpresa.al/product-category/elektroshtepiake/produkte-smart/
+288	VESHJE FEMRASH	Veshje	https://stina.al/kategoria-e-produktit/femra/veshje-femra/?tag_filter=new-2020
+289	VESHJE FEMRASH	Intimo	https://stina.al/kategoria-e-produktit/femra/intimo-femra/?tag_filter=new-2020
+290	VESHJE FEMRASH	Këpucë	https://stina.al/kategoria-e-produktit/femra/main-kepuce-femra/?tag_filter=new-2020
+291	VESHJE FEMRASH	Aksesorë	https://stina.al/kategoria-e-produktit/femra/aksesore-femra/?tag_filter=new-2020
+292	VESHJE FEMRASH	Plazh	https://stina.al/kategoria-e-produktit/femra/plazh-femra/?tag_filter=new-2020
+293	VESHJE MESHKUJSH	Veshje	https://stina.al/kategoria-e-produktit/meshkuj/veshje-meshkuj/?tag_filter=new-2020
+294	VESHJE MESHKUJSH	Intimo	https://stina.al/kategoria-e-produktit/meshkuj/intimo-meshkuj/?tag_filter=new-2020
+295	VESHJE MESHKUJSH	Këpucë	https://stina.al/kategoria-e-produktit/meshkuj/main-kepuce-meshkuj/?tag_filter=new-2020
+296	VESHJE MESHKUJSH	Aksesorë	https://stina.al/kategoria-e-produktit/meshkuj/aksesore-meshkuj/?tag_filter=new-2020
+297	VESHJE MESHKUJSH	Plazh	https://stina.al/kategoria-e-produktit/meshkuj/plazh-meshkuj/?tag_filter=new-2020
+298	VESHJE FËMIJËSH	Vajzë	https://stina.al/kategoria-e-produktit/femije-new/femije-vajze/?tag_filter=new-2020
+299	VESHJE FËMIJËSH	Djalë	https://stina.al/kategoria-e-produktit/femije-new/femije-djale/?tag_filter=new-2020
 \.
 
 
@@ -733,6 +756,9 @@ Tv Video & Audio
 Dron - Kamera - Gimbal
 Lojera & Argetim
 Elektroshtepiake
+VESHJE FEMRASH
+VESHJE MESHKUJSH
+VESHJE FËMIJËSH
 \.
 
 
@@ -979,6 +1005,17 @@ COPY public.filters_table (id, filters, category_id) FROM stdin;
 233	{"nenkategoria": ["Video Games", "Smart Games", "Spinners"], "filtro_sipas_markës": ["EA Sports", "PTW", "Sony"], "filtro_sipas_ngjyrave": ["Blue", "Red"]}	234
 234	{"nenkategoria": ["DualShocks", "Mobile Controllers"], "filtro_sipas_markës": ["Baseus", "Sony", "Xiaomi"], "filtro_sipas_ngjyrave": ["Black", "Forest Green", "Green", "White"]}	235
 235	{"nenkategoria": ["Hoverboard"], "filtro_sipas_ngjyrave": ["Pink Pastel", "Black", "Blue", "Clear Yellow", "Fiesta Red", "Forest Green", "Orange", "Pink", "Red", "White"]}	236
+281	{"filtro_sipas_mases": ["M", "XL", "XXXL", "XXL", "L", "S", "XS", "XS-S", "L/32", "S/32", "XL/30", "M-L", "3XL", "3-4", "4-5", "5-6", "6-7", "7-8", "9-10", "11-12", "24", "24/30", "25", "25/32", "25/30", "26", "26/32", "26/30", "27", "27/32", "27/30", "28", "28/32", "28/30", "29", "29/32", "29/30", "30", "30/32", "30/30", "31", "31/32", "31/30", "32", "32/32", "32/30", "33", "33/30", "34", "34/32", "34/30", "34L", "36", "36L", "38", "38L", "40", "40L", "40/34", "42", "42L", "44", "44L", "46", "48"], "filtro_sipas_markës": ["Koton", "LTB", "Penti"], "filtro_sipas_ngjyës": ["rgb(255, 216, 174)", "rgb(43, 79, 129)", "rgb(255, 255, 255)", "rgb(255, 0, 0)", "rgb(255, 255, 0)", "rgb(0, 0, 0)", "rgb(128, 128, 128)", "rgb(46, 171, 46)", "rgb(75, 54, 33)", "rgb(128, 0, 128)", "rgb(250, 74, 10)", "rgb(255, 192, 203)", "rgb(128, 0, 32)"]}	288
+282	{"filtro_sipas_mases": ["M", "XL", "XXL", "L", "S", "STD", "XS", "S/M", "M/L", "L/XL", "XS-S", "T", "L-XL", "S-M", "M-L", "1/2", "3/4", "34", "36", "38", "40", "70B", "70C", "70A", "75B", "75C", "75D", "75A", "80B", "80C", "80A", "80D", "85B", "85C", "85D", "90C", "90E", "90D", "90B", "95D", "95C"], "filtro_sipas_markës": ["Flo", "Koton", "Penti"], "filtro_sipas_ngjyës": ["rgb(255, 216, 174)", "rgb(43, 79, 129)", "rgb(255, 255, 255)", "rgb(255, 0, 0)", "rgb(255, 255, 0)", "rgb(0, 0, 0)", "rgb(128, 128, 128)", "rgb(46, 171, 46)", "rgb(75, 54, 33)", "rgb(128, 0, 128)", "rgb(244, 224, 205)", "rgb(250, 74, 10)", "rgb(255, 192, 203)", "rgb(128, 0, 32)"]}	289
+283	{"filtro_sipas_mases": ["31", "32", "33", "34", "35", "35-36", "36", "37", "37-38", "38", "39", "39-40", "40", "41", "42", "43", "44", "45"], "filtro_sipas_markës": ["Stina", "Flo", "Elle", "Koton", "Penti"], "filtro_sipas_ngjyës": ["rgb(255, 216, 174)", "rgb(43, 79, 129)", "rgb(255, 255, 255)", "rgb(255, 0, 0)", "rgb(255, 255, 0)", "rgb(0, 0, 0)", "rgb(128, 128, 128)", "rgb(46, 171, 46)", "rgb(75, 54, 33)", "rgb(128, 0, 128)", "rgb(244, 224, 205)", "rgb(250, 74, 10)", "rgb(255, 192, 203)", "rgb(128, 0, 32)"]}	290
+284	{"filtro_sipas_mases": ["M", "L", "S", "STD", "T", "80", "85", "90", "95", "100", "105"], "filtro_sipas_markës": ["Flo", "Elle", "Koton", "Penti"], "filtro_sipas_ngjyës": ["rgb(255, 216, 174)", "rgb(43, 79, 129)", "rgb(255, 255, 255)", "rgb(255, 0, 0)", "rgb(255, 255, 0)", "rgb(0, 0, 0)", "rgb(128, 128, 128)", "rgb(46, 171, 46)", "rgb(75, 54, 33)", "rgb(250, 74, 10)", "rgb(255, 192, 203)"]}	291
+285	{"filtro_sipas_mases": ["M", "XL", "L", "S", "STD", "XS", "XS-S", "L-XL", "S-M", "M-L", "34", "36", "38", "40", "42", "44", "46", "48", "50", "75C", "80B", "80C", "80D", "85B", "85C", "85D", "90C", "90D"], "filtro_sipas_markës": ["Koton", "Penti"], "filtro_sipas_ngjyës": ["rgb(255, 216, 174)", "rgb(43, 79, 129)", "rgb(255, 255, 255)", "rgb(255, 0, 0)", "rgb(255, 255, 0)", "rgb(0, 0, 0)", "rgb(128, 128, 128)", "rgb(46, 171, 46)", "rgb(75, 54, 33)", "rgb(128, 0, 128)", "rgb(250, 74, 10)", "rgb(255, 192, 203)", "rgb(128, 0, 32)"]}	292
+286	{"filtro_sipas_mases": ["M", "XL", "XXXL", "XXL", "L", "S", "STD", "XS", "3XL", "28/32", "28/30", "28/28", "29", "29/32", "29/30", "29/28", "30", "30/32", "30/33", "30/34", "30/30", "30/28", "31", "31/32", "31/34", "31-34", "31/30", "31/28", "32", "32/32", "32/34", "32/30", "32/28", "33", "33/32", "33/34", "33-32", "33/30", "33/28", "34", "34/32", "34/34", "34/30", "34/28", "36", "36/32", "36/34", "36/30", "38", "38/32", "38/34", "38/30", "40", "40/32", "40/30", "42", "42/32", "42/34", "42/30", "44", "46", "48", "50", "52", "54", "56"], "filtro_sipas_markës": ["Koton", "LTB"], "filtro_sipas_ngjyës": ["rgb(255, 216, 174)", "rgb(43, 79, 129)", "rgb(255, 255, 255)", "rgb(255, 0, 0)", "rgb(255, 255, 0)", "rgb(0, 0, 0)", "rgb(128, 128, 128)", "rgb(46, 171, 46)", "rgb(75, 54, 33)", "rgb(128, 0, 128)", "rgb(250, 74, 10)", "rgb(255, 192, 203)", "rgb(128, 0, 32)"]}	293
+287	{"filtro_sipas_mases": ["M", "XL", "XXL", "L", "S", "STD"], "filtro_sipas_markës": ["Flo", "Koton", "Penti"], "filtro_sipas_ngjyës": ["rgb(255, 216, 174)", "rgb(43, 79, 129)", "rgb(255, 255, 255)", "rgb(0, 0, 0)", "rgb(128, 128, 128)", "rgb(46, 171, 46)", "rgb(75, 54, 33)", "rgb(128, 0, 32)"]}	294
+288	{"filtro_sipas_mases": ["25", "26", "27", "28", "29", "30", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46"], "filtro_sipas_markës": ["Flo", "Elle", "Koton"], "filtro_sipas_ngjyës": ["rgb(255, 216, 174)", "rgb(43, 79, 129)", "rgb(255, 255, 255)", "rgb(255, 0, 0)", "rgb(255, 255, 0)", "rgb(0, 0, 0)", "rgb(128, 128, 128)", "rgb(46, 171, 46)", "rgb(75, 54, 33)", "rgb(128, 0, 32)"]}	295
+289	{"filtro_sipas_mases": ["M", "L", "S", "STD", "T", "90", "100", "110", "115", "120", "130"], "filtro_sipas_markës": ["Flo", "Elle", "Koton"], "filtro_sipas_ngjyës": ["rgb(255, 216, 174)", "rgb(43, 79, 129)", "rgb(0, 0, 0)", "rgb(128, 128, 128)", "rgb(46, 171, 46)", "rgb(75, 54, 33)"]}	296
+291	{"filtro_sipas_mases": ["STD", "1", "2", "2-4", "2-3", "2/4", "3", "3-4", "3-6", "4", "4-5", "5-8", "5-6", "5", "5/8", "6-7", "6-9", "7-8", "9-12", "9-10", "9/12", "11-12", "12-18", "13-14", "14-15", "18-24", "19", "20", "20-22", "21", "22", "23", "23-26", "24", "24-36", "25", "26", "27", "27-30", "28", "29", "30", "31", "31-34", "32", "33", "34", "35", "36", "37", "38", "39", "40", "65A", "65B", "70B", "70A", "75A"], "filtro_sipas_markës": ["Flo", "Koton", "Penti"], "filtro_sipas_ngjyës": ["rgb(255, 216, 174)", "rgb(43, 79, 129)", "rgb(255, 255, 255)", "rgb(255, 0, 0)", "rgb(255, 255, 0)", "rgb(0, 0, 0)", "rgb(128, 128, 128)", "rgb(46, 171, 46)", "rgb(75, 54, 33)", "rgb(128, 0, 128)", "rgb(250, 74, 10)", "rgb(255, 192, 203)", "rgb(128, 0, 32)"]}	298
+292	{"filtro_sipas_mases": ["STD", "0-3", "1", "2", "2-4", "2-3", "2/4", "3", "3-4", "3-6", "4-5", "5-8", "5-6", "5", "5/8", "6-7", "6-9", "7-8", "7", "9-12", "9-10", "9", "9/12", "11-12", "12-18", "13-14", "18", "18-24", "19", "20", "21", "22", "23", "23-26", "24", "24-36", "25", "26", "27", "27-30", "28", "29", "30", "31", "31-34", "32", "33", "34", "35", "36", "37", "38", "39", "40"], "filtro_sipas_markës": ["Flo", "Koton", "Penti"], "filtro_sipas_ngjyës": ["rgb(255, 216, 174)", "rgb(43, 79, 129)", "rgb(255, 255, 255)", "rgb(255, 0, 0)", "rgb(255, 255, 0)", "rgb(0, 0, 0)", "rgb(128, 128, 128)", "rgb(46, 171, 46)", "rgb(75, 54, 33)", "rgb(250, 74, 10)", "rgb(255, 192, 203)", "rgb(128, 0, 32)"]}	299
 \.
 
 
@@ -987,9 +1024,6 @@ COPY public.filters_table (id, filters, category_id) FROM stdin;
 --
 
 COPY public.products (id, creation_time, details, owner, spot, category_id) FROM stdin;
-1	16200	{"desc": "fgdgfsd", "name": "gfdsgdfg", "likes": 0, "lloji": "Biskota", "price": 5435, "likers": 0, "photos": [{"src": "https://firebasestorage.googleapis.com/v0/b/fertility-1e091.appspot.com/o/images%2FbitburgerPremiumPilsKanace%20Final.png?alt=media&token=d26a26ef-4448-4874-93b7-00ee11a9c9e8", "emri": "bitburgerPremiumPilsKanace Final.png"}], "seller": "diambishka", "priceLow": null, "kategoria": "Embëlsira dhe biskota", "sellerPhoto": null, "filtro_sipas_markës": null}	albi	AMD Radeon 580	3
-2	16200	{"desc": "fgdgfsd", "name": "gfdsgdfg", "likes": 0, "lloji": "Biskota", "price": 5435, "likers": 0, "photos": [{"src": "https://firebasestorage.googleapis.com/v0/b/fertility-1e091.appspot.com/o/images%2FbitburgerPremiumPilsKanace%20Final.png?alt=media&token=d26a26ef-4448-4874-93b7-00ee11a9c9e8", "emri": "bitburgerPremiumPilsKanace Final.png"}], "seller": "diambishka", "priceLow": null, "kategoria": "Embëlsira dhe biskota", "sellerPhoto": null, "filtro_sipas_markës": null}	albi	AMD Radeon 580	8
-3	16200	{"desc": "fgdgfsd", "name": "gfdsgdfg", "likes": 0, "lloji": "Biskota", "price": 5435, "likers": 0, "photos": [{"src": "https://firebasestorage.googleapis.com/v0/b/fertility-1e091.appspot.com/o/images%2FbitburgerPremiumPilsKanace%20Final.png?alt=media&token=d26a26ef-4448-4874-93b7-00ee11a9c9e8", "emri": "bitburgerPremiumPilsKanace Final.png"}], "seller": "diambishka", "priceLow": null, "kategoria": "Embëlsira dhe biskota", "sellerPhoto": null, "filtro_sipas_markës": null}	albi	AMD Radeon 580	8
 \.
 
 
@@ -997,28 +1031,28 @@ COPY public.products (id, creation_time, details, owner, spot, category_id) FROM
 -- Name: categories_id_seq; Type: SEQUENCE SET; Schema: public; Owner: eblej_director
 --
 
-SELECT pg_catalog.setval('public.categories_id_seq', 239, true);
+SELECT pg_catalog.setval('public.categories_id_seq', 299, true);
 
 
 --
 -- Name: category_links_id_seq; Type: SEQUENCE SET; Schema: public; Owner: eblej_director
 --
 
-SELECT pg_catalog.setval('public.category_links_id_seq', 239, true);
+SELECT pg_catalog.setval('public.category_links_id_seq', 299, true);
 
 
 --
 -- Name: filters_table_id_seq; Type: SEQUENCE SET; Schema: public; Owner: eblej_director
 --
 
-SELECT pg_catalog.setval('public.filters_table_id_seq', 238, true);
+SELECT pg_catalog.setval('public.filters_table_id_seq', 292, true);
 
 
 --
 -- Name: products_id_seq; Type: SEQUENCE SET; Schema: public; Owner: eblej_director
 --
 
-SELECT pg_catalog.setval('public.products_id_seq', 3, true);
+SELECT pg_catalog.setval('public.products_id_seq', 1, false);
 
 
 --

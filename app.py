@@ -527,15 +527,19 @@ def edit_products():
 
     to_edit = json.loads(request.form.get('to_edit'))
 
+    del_length = 0
+
     print("to_edit", to_edit)
 
     for operation in to_edit['operations']:
+
         try:
             if operation['operation'] == "delete":
                 to_edit['operations'].remove(operation)
                 to_edit['operations'].append(operation)
         except:
             pass
+
 
     product_id = to_edit['product_id']
 
@@ -607,20 +611,22 @@ def edit_products():
                     print("1 osh e kar")
                     
                 else:
-                    commands = """  UPDATE products 
-                                    SET details = JSONB_SET(
-                                        details, 
-                                        %s, 
-                                        (WITH new_photos AS 
-                                            (
-                                                SELECT JSONB_ARRAY_ELEMENTS(details -> 'photos') photos 
-                                                FROM products 
-                                                WHERE id = %s
-                                            ) 
-                                        SELECT JSONB_AGG(photos)
-                                        FROM new_photos 
-                                        WHERE photos->>'photo_uuid' != '%s')) 
-                                    WHERE id = %s;"""
+                    commands = """  
+                            UPDATE products 
+                            SET details = JSONB_SET(
+                                details, 
+                                %s, 
+                                (WITH new_photos AS 
+                                    (
+                                        SELECT JSONB_ARRAY_ELEMENTS(details -> 'photos') photos 
+                                        FROM products 
+                                        WHERE id = %s
+                                    ) 
+                                SELECT JSONB_AGG(photos)
+                                FROM new_photos 
+                                WHERE photos->>'photo_uuid' != '%s')) 
+                            WHERE id = %s;
+                            """
                     
                     data = ("{%s}" % operation['fieldname'], product_id, operation['photo_uuid'], product_id)
 
