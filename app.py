@@ -613,7 +613,7 @@ def edit_products():
 
                 if cursor.fetchall()[0][0] == 1:
 
-                    print("1 osh e kar")
+                    return "0"
                     
                 else:
                     commands = """  
