@@ -24,7 +24,10 @@ command = """
         FROM new_photos 
         WHERE photos::jsonb#>> '%s' != 'b423ka')
     )
-    WHERE id = %s;""" % ("{%s}" % "photos", 1, json.dumps(new_value), "{%s}" % "photo_uuid", 1)
+    WHERE id = %s;""" % ("{%s}" % "photos", 18, json.dumps(new_value), "{%s}" % "photo_uuid", 18)
+
+
+cmd = "SELECT (details->'photos') || %s"
 
 cursor.execute(command)
 

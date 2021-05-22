@@ -558,37 +558,42 @@ def edit_products():
                                 false) 
                             WHERE id = %s;""", data
                             )
-
         else:
 
             print("OPERATION TYPE ", operation['operation'])
 
             if operation['operation'] == 'update':
-                path = "{photos,%s}" % operation['photo_uuid']
-                print(path)
-                commands = """  UPDATE products 
-                                SET details = JSONB_SET(
-                                    details::jsonb, 
-                                    %s, 
-                                    %s, 
-                                    false) 
-                                WHERE id = %s;"""
 
-                data = ("{photos,%s}" % operation['photo_uuid'], json.dumps(operation['new_value']), product_id)
+                command = "UPDATE products SET details = JSONB_SET(details, %s, (SELECT (details->'photos') || %s FROM products WHERE id = %s), false) WHERE id = %s;"
+
+                print(type(json.dumps(operation['new_value'])))
+
+                data = ("{%s}" % operation['fieldname'], json.dumps(operation['new_value']), product_id, product_id)
+
+                cursor.execute(command, data)
+
+                commands = """  
+                        UPDATE products 
+                        SET details = JSONB_SET(
+                            details, 
+                            %s, 
+                            (WITH new_photos AS 
+                                (
+                                    SELECT JSONB_ARRAY_ELEMENTS(details -> 'photos') photos 
+                                    FROM products 
+                                    WHERE id = %s
+                                ) 
+                            SELECT JSONB_AGG(photos)
+                            FROM new_photos 
+                            WHERE photos->>'photo_uuid' != '%s')) 
+                        WHERE id = %s;
+                        """
+                
+                data = ("{%s}" % operation['fieldname'], product_id, operation['photo_uuid'], product_id)
 
                 cursor.execute(commands, data)
 
             elif operation['operation'] == 'insert':
-
-                cursor.execute( """  
-                                SELECT jsonb_array_length(details->'photos') 
-                                FROM products 
-                                WHERE id = %s;
-                                """, (product_id, ))
-
-                number_of_photos = cursor.fetchall()[0][0]
-
-                operation['new_value'].update({"photo_uuid" : number_of_photos})
 
                 command = "UPDATE products SET details = JSONB_SET(details, %s, (SELECT (details->'photos') || %s FROM products WHERE id = %s), false) WHERE id = %s;"
 
