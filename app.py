@@ -629,7 +629,7 @@ def edit_products():
                                     ) 
                                 SELECT JSONB_AGG(photos)
                                 FROM new_photos 
-                                WHERE photos->>'photo_uuid' != '%s')) 
+                                WHERE photos->>'photo_uuid' != %s)) 
                             WHERE id = %s;
                             """
                     
