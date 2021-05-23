@@ -226,7 +226,7 @@ def filter():
     cursor.execute(commands, data)
 
     columns = ('id', 'creation_time', 'details', 'owner', 'spot')
-"priceLow"
+    
     products = cursor.fetchall()
 
     print(products)
