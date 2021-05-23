@@ -373,17 +373,17 @@ def newest():
 
         for row in data:
 
-        response.get("filtrat").append({"value" : None, "emri" : row[0].replace("_hyphen_", "-").replace("_asgn_", "&").replace("_", " ").upper(), "values" : [], "value" : None})
-        
-        filters_array = [j for i in row[1] for j in i]
-
-        current_working_filters_value_list = response.get("filtrat")[filters_index].get("values")
-
-        for filter_option in filters_array:
+            response.get("filtrat").append({"value" : None, "emri" : row[0].replace("_hyphen_", "-").replace("_asgn_", "&").replace("_", " ").upper(), "values" : [], "value" : None})
             
-            if filter_option not in [d.get('emri') for d in current_working_filters_value_list]:
+            filters_array = [j for i in row[1] for j in i]
 
-                current_working_filters_value_list.append({"emri" : filter_option, "checked" : False})
+            current_working_filters_value_list = response.get("filtrat")[filters_index].get("values")
+
+            for filter_option in filters_array:
+                
+                if filter_option not in [d.get('emri') for d in current_working_filters_value_list]:
+
+                    current_working_filters_value_list.append({"emri" : filter_option, "checked" : False})
 
         filters_index += 1
 
