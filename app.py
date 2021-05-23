@@ -199,8 +199,8 @@ def filter():
         
         if filter_data['filters'][index]['kategoria'] == "price":
 
-            command = f" AND (details->>'price')::NUMERIC > {filter_data['filters'][index]['min_value']} AND (details->>'price')::NUMERIC < {filter_data['filters'][index]['max_value']}"
-        
+            command = f" AND ((details->>'price')::NUMERIC > {filter_data['filters'][index]['min_value']} AND (details->>'price')::NUMERIC < {filter_data['filters'][index]['max_value']}) OR ((details->>'priceLow')::NUMERIC > {filter_data['filters'][index]['min_value']} AND (details->>'priceLow')::NUMERIC < {filter_data['filters'][index]['max_value']})"
+
         else:
             filter_vale = filter_data['filters'][index]['value'].replace("'","\'")
 
@@ -212,7 +212,6 @@ def filter():
         
         if index == len(filter_data['filters']) -1:
             commands += f" LIMIT {filter_data['last']};"
-
 
         index += 1
 
@@ -227,8 +226,10 @@ def filter():
     cursor.execute(commands, data)
 
     columns = ('id', 'creation_time', 'details', 'owner', 'spot')
-
+"priceLow"
     products = cursor.fetchall()
+
+    print(products)
 
     for product in products: 
         response.get("produktet").append(dict(zip(columns, product)))
