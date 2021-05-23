@@ -407,38 +407,38 @@ def highest_evaluation():
 
     id_list = tuple([d[0] for d in data])
 
-    columns = ('creation_time', 'details', 'owner', 'spot')
+    if len(id_list) > 0:
 
-    response = {"produktet" : [], "filtrat" : []}
+        columns = ('creation_time', 'details', 'owner', 'spot')
 
-    for dt in data:
-        response['produktet'].append(dict(zip(columns, (dt[1], dt[2], dt[3], dt[4]))))
+        for dt in data:
+            response['produktet'].append(dict(zip(columns, (dt[1], dt[2], dt[3], dt[4]))))
 
-    command2 = "SELECT d.key, json_agg(d.value) FROM filters_table JOIN json_each(filters_table.filters::json) d ON true WHERE filters_table.category_id IN %s GROUP BY d.key;"
+        command2 = "SELECT d.key, json_agg(d.value) FROM filters_table JOIN json_each(filters_table.filters::json) d ON true WHERE filters_table.category_id IN %s GROUP BY d.key;"
 
-    data = (id_list, )
+        data = (id_list, )
 
-    cursor.execute(command2, data)
+        cursor.execute(command2, data)
 
-    data = cursor.fetchall()
+        data = cursor.fetchall()
 
-    filters_index = 0
+        filters_index = 0
 
-    for row in data:
+        for row in data:
 
-        response.get("filtrat").append({"value" : None, "emri" : row[0].replace("_hyphen_", "-").replace("_asgn_", "&").replace("_", " ").upper(), "values" : [], "value" : None})
-        
-        filters_array = [j for i in row[1] for j in i]
-
-        current_working_filters_value_list = response.get("filtrat")[filters_index].get("values")
-
-        for filter_option in filters_array:
+            response.get("filtrat").append({"value" : None, "emri" : row[0].replace("_hyphen_", "-").replace("_asgn_", "&").replace("_", " ").upper(), "values" : [], "value" : None})
             
-            if filter_option not in [d.get('emri') for d in current_working_filters_value_list]:
+            filters_array = [j for i in row[1] for j in i]
 
-                current_working_filters_value_list.append({"emri" : filter_option, "checked" : False})
+            current_working_filters_value_list = response.get("filtrat")[filters_index].get("values")
 
-        filters_index += 1
+            for filter_option in filters_array:
+                
+                if filter_option not in [d.get('emri') for d in current_working_filters_value_list]:
+
+                    current_working_filters_value_list.append({"emri" : filter_option, "checked" : False})
+
+            filters_index += 1
 
     return jsonify(response)
 
