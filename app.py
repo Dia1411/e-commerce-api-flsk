@@ -351,24 +351,27 @@ def newest():
 
     id_list = tuple([d[0] for d in data])
 
-    columns = ('creation_time', 'details', 'owner', 'spot')
 
-    response = {"produktet" : [], "filtrat" : []}
+    if len(id_list) > 0:
 
-    for dt in data:
-        response['produktet'].append(dict(zip(columns, (dt[1], dt[2], dt[3], dt[4]))))
+        columns = ('creation_time', 'details', 'owner', 'spot')
 
-    command2 = "SELECT d.key, json_agg(d.value) FROM filters_table JOIN json_each(filters_table.filters::json) d ON true WHERE filters_table.category_id IN %s GROUP BY d.key;"
+        response = {"produktet" : [], "filtrat" : []}
 
-    data = (id_list, )
+        for dt in data:
+            response['produktet'].append(dict(zip(columns, (dt[1], dt[2], dt[3], dt[4]))))
 
-    cursor.execute(command2, data)
+        command2 = "SELECT d.key, json_agg(d.value) FROM filters_table JOIN json_each(filters_table.filters::json) d ON true WHERE filters_table.category_id IN %s GROUP BY d.key;"
 
-    data = cursor.fetchall()
+        data = (id_list, )
 
-    filters_index = 0
+        cursor.execute(command2, data)
 
-    for row in data:
+        data = cursor.fetchall()
+
+        filters_index = 0
+
+        for row in data:
 
         response.get("filtrat").append({"value" : None, "emri" : row[0].replace("_hyphen_", "-").replace("_asgn_", "&").replace("_", " ").upper(), "values" : [], "value" : None})
         
