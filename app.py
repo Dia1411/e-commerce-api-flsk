@@ -159,9 +159,9 @@ def products():
 
     product_name = request.args.get('product_name')
 
-    columns = ('creation_time', 'details', 'owner', 'spot')
+    columns = ('id','creation_time', 'details', 'owner', 'spot')
   
-    cursor.execute(f"SELECT creation_time, details, owner, spot  FROM products WHERE spot = '{product_name}';")
+    cursor.execute(f"SELECT id, creation_time, details, owner, spot  FROM products WHERE spot = '{product_name}';")
     
     products = cursor.fetchall()[0]
 
