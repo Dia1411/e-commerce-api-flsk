@@ -697,7 +697,7 @@ def delete_products():
 @app.route('/seller_request', methods=["POST"])
 def seller_request():
 
-    filter_value = request.form.get("email_data")
+    filter_value = json.loads(request.form.get("email_data"))
 
     msg2 = f"""
         
@@ -710,7 +710,7 @@ def seller_request():
         Ju mund ta kontaktoni ne...
         Numer Telefoni : {filter_value['numri']}
         Email : {filter_value['email']}
-        
+
         """
 
     # content
