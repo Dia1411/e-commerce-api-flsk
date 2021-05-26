@@ -2,13 +2,22 @@ from flask import Flask, session, render_template, request ,redirect , url_for, 
 from flask_cors import CORS
 import psycopg2, json, smtplib
 
+from flask_mail import Mail, Message
 
 from email.message import EmailMessage
 
 
 app = Flask(__name__)
 CORS(app)
+mail= Mail(app)
 
+app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'stinesarah121@gmail.com'
+app.config['MAIL_PASSWORD'] = "11@235813"
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+mail = Mail(app)
 
 def get_category_id(category_name, cursor):
 
@@ -699,6 +708,8 @@ def seller_request():
 
     filter_value = json.loads(request.form.get("email_data"))
 
+    message_subject = f"Kerkes abonimin {filter_value['paketa']} nga {filter_value['emri']}"
+
     msg2 = f"""
         
         {filter_value['emri']} deshiron te behet shites ne Eblej! \n
@@ -713,27 +724,10 @@ def seller_request():
 
         """
 
-    # content
-    sender = "stinesarah121@gmail.com"
-    reciever = "ergi1000@gmail.com"
-    password = "11@235813"
+    msg = Message(message_subject, sender = 'stinesarah121@gmail.com', recipients = ['ergi1000@gmail.com'])
+    msg.body = msg2
+    mail.send(msg)
 
-    # action
-    msg = EmailMessage()
-
-    msg['subject'] = f"Kerkes abonimin {filter_value['paketa']} nga {filter_value['emri']} "
-
-    msg['from'] = sender
-    
-    msg['to'] = reciever
-
-    msg.set_content(msg2 + "\n")
-
-    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-
-        smtp.login(sender,password)
-
-        smtp.send_message(msg)
 
     return "1"
 
