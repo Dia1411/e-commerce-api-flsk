@@ -1,6 +1,10 @@
 from flask import Flask, session, render_template, request ,redirect , url_for, jsonify
 from flask_cors import CORS
-import psycopg2, json
+import psycopg2, json, smtplib
+
+
+from email.message import EmailMessage
+
 
 app = Flask(__name__)
 CORS(app)
@@ -690,6 +694,48 @@ def delete_products():
     return "1"
 
 
+@app.route('/seller_request', methods=["POST"])
+def seller_request():
+
+    filter_value = request.form.get("email_data")
+
+    msg2 = f"""
+        
+        {filter_value['emri']} deshiron te behet shites ne Eblej! \n
+
+        {filter_value['emri']} ka zgjedhur abonimin {filter_value['paketa']}
+
+        {filter_value['mesazhi']}
+
+        Ju mund ta kontaktoni ne...
+        Numer Telefoni : {filter_value['numri']}
+        Email : {filter_value['email']}
+        
+        """
+
+    # content
+    sender = "stinesarah121@gmail.com"
+    reciever = "ergi1000@gmail.com"
+    password = "11@235813"
+
+    # action
+    msg = EmailMessage()
+
+    msg['subject'] = f"Kerkes abonimin {filter_value['paketa']} nga {filter_value['emri']} "
+
+    msg['from'] = sender
+    
+    msg['to'] = reciever
+
+    msg.set_content(msg2 + "\n")
+
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+
+        smtp.login(sender,password)
+
+        smtp.send_message(msg)
+
+    return "1"
 
 
 """
