@@ -755,17 +755,17 @@ def fetch_seller_requests():
 
     cursor = conn.cursor()  
 
-    cursor.execute("SELECT request FROM register_requests ORDER BY created_at DESC;")
+    cursor.execute("SELECT id, request FROM register_requests ORDER BY created_at DESC;")
 
-    seller_requests = cursor.fetchall()
+    columns = ('id', 'request')
 
-    print(seller_requests)
-
-    response = [request[0] for request in seller_requests]
+    response = [dict(zip(columns, dt)) for dt in cursor.fetchall()]
 
     conn.commit()
 
     return jsonify(response)
+
+
 
 """
 @app.route("/menu" , methods=["POST"])
