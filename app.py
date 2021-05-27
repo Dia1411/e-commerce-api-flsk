@@ -767,7 +767,7 @@ def fetch_seller_requests():
 
 
 @app.route("/delete_seller_requests", methods = ["POST"])
-def fetch_seller_requests():
+def delete_seller_requests():
 
     seller_request_id = request.args.get('id')
 
