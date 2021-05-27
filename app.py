@@ -739,7 +739,7 @@ def receive_seller_request():
 
     cursor = conn.cursor()  
 
-    register_data = json.loads(request.form.get("email_data"))
+    register_data = request.form.get("email_data")
 
     cursor.execute("INSERT INTO register_requests (request) VALUES (%s)", (register_data, ))
     
@@ -748,6 +748,25 @@ def receive_seller_request():
     return "1"
 
 
+@app.route("/fetch_seller_requests", methods = ["POST"])
+def fetch_seller_requests():
+
+    conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
+
+    cursor = conn.cursor()  
+
+    cursor.execute("SELECT request FROM register_requests ORDER BY created_at DESC;")
+
+    seller_requests = cursor.fetchall()
+
+    print(seller_requests)
+
+    for request in seller_requests:
+        json.loads(request[0])
+
+    conn.commit()
+
+    return "1"
 
 """
 @app.route("/menu" , methods=["POST"])
