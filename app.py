@@ -761,8 +761,12 @@ def fetch_seller_requests():
 
     print(seller_requests)
 
+    response = [json.loads(request[0]) for request in seller_requests]
+
     for request in seller_requests:
-        json.loads(request[0])
+        print(f"SELLER REQUEST({request[0]})")
+        fetched_request = json.loads(request[0])
+        print(fetched_request)
 
     conn.commit()
 
