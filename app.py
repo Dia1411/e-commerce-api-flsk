@@ -766,6 +766,20 @@ def fetch_seller_requests():
     return jsonify(response)
 
 
+@app.route("/delete_seller_requests", methods = ["POST"])
+def fetch_seller_requests():
+
+    seller_request_id = request.args.get('id')
+
+    conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
+
+    cursor = conn.cursor()  
+
+    cursor.execute("DELETE FROM register_requests WHERE id = %s", (seller_request_id, ))
+
+    conn.commit()
+
+    return "1"
 
 """
 @app.route("/menu" , methods=["POST"])
