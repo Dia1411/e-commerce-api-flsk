@@ -15,7 +15,7 @@ app.config['MAIL_PORT'] =  465
 app.config['MAIL_USERNAME'] = "stinesarah121@gmail.com"
 app.config['MAIL_PASSWORD'] = "11@235813"
 app.config['MAIL_USE_TLS'] = False
-app.config['MAIL_USE_SSL'] = False
+app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
 
 
@@ -730,6 +730,23 @@ def seller_request():
 
 
     return "1"
+
+
+@app.route("/receive_seller_request", methods = ["POST"])
+def receive_seller_request():
+    
+    conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
+
+    cursor = conn.cursor()  
+
+    register_data = json.loads(request.form.get("email_data"))
+
+    cursor.execute("INSERT INTO register_requests (request) VALUES (%s)", (register_data, ))
+    
+    conn.commit()
+
+    return "1"
+
 
 
 """
