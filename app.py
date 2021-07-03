@@ -29,7 +29,7 @@ def get_category_id(category_name, cursor):
 
 
 @app.route("/fetch_departaments" , methods=["POST"])
-def categories(): 
+def departaments(): 
 
     conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
 
