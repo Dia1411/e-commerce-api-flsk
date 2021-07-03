@@ -1,4 +1,5 @@
 from flask import Flask, session, render_template, request ,redirect , url_for, jsonify
+from flask.wrappers import Response
 from flask_cors import CORS
 import psycopg2, json
 
@@ -39,10 +40,22 @@ def departaments():
 
     cursor.execute(f"SELECT * FROM departaments;")
 
+    response = []
+
     data = cursor.fetchall()
 
     for departament in data:
-        print(data)
+        
+        insert_departament = {'departament': departament[0], 'categories': []}
+
+        cursor.execute("SELECT category FROM categories WHERE departament = %s;",(departament[0],))
+
+        categories = cursor.fetchall()
+
+        for category in categories:
+            insert_departament['categories'].append(category[0])
+            
+        response.append(insert_departament)
 
     conn.close()
 
