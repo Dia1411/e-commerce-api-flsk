@@ -28,6 +28,27 @@ def get_category_id(category_name, cursor):
     return cursor.fetchall()[0][0]
 
 
+@app.route("/fetch_departaments" , methods=["POST"])
+def categories(): 
+
+    conn = psycopg2.connect(database="eblej", user="eblej_director", password="AlbaniasAmazon", host="localhost", port="5432")
+
+    cursor = conn.cursor()  
+
+    print("FETCH DEPARTAMENTS")
+
+    cursor.execute(f"SELECT * FROM departaments;")
+
+    data = cursor.fetchall()
+
+    for departament in data:
+        print(data)
+
+    conn.close()
+
+    return jsonify(data)
+
+
 @app.route("/categories" , methods=["POST"])
 def categories(): 
 
@@ -781,6 +802,7 @@ def delete_seller_requests():
 
     return "1"
 
+
 """
 @app.route("/menu" , methods=["POST"])
 def grab_menu():
@@ -814,6 +836,7 @@ def grab_menu():
 
     return jsonify(response_menu)
 
+
 @app.route("/sort_newest", methods=["POST"])
 def sort_newest():
 
@@ -836,6 +859,7 @@ def sort_newest():
 
     return jsonify(response)
 
+
 @app.route("/sort_low_high", methods=["POST"])
 def sort_low_high():
 
@@ -857,8 +881,6 @@ def sort_low_high():
         response['produktet'].append(dict(zip(columns, (dt[1], dt[2], dt[3], dt[4]))))
 
     return jsonify(response)
-
-
 """
 
 if __name__ == "__main__": 
