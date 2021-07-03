@@ -59,7 +59,7 @@ def departaments():
 
     conn.close()
 
-    return jsonify(data)
+    return jsonify(response)
 
 
 @app.route("/categories" , methods=["POST"])
